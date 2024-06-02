@@ -48,7 +48,7 @@ def update_profile(request,id):
             new_data = data_org(form)
             worksheet.update(gsheet_range,[new_data])
 
-            return redirect('profile',new_id)
+            return redirect('home',)
 
 
 
