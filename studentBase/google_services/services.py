@@ -1,6 +1,6 @@
 import os
 import gspread
-from typing import List
+
 from django.conf import settings
 
 def initialize_gspread() -> gspread.client.Client:
@@ -27,10 +27,24 @@ def get_credentials() -> dict:
     "universe_domain": os.getenv("UNIVERSE_DOMAIN")
   }
 
-def get_all_rows(doc_name: str, sheet_name: str = None) -> List[dict]:
+def get_all_students(doc_name: str, sheet_name: str = None):
   """
   Fetches all rows from a given Google Sheet worksheet.
   """
   sh = settings.GSPREAD_CLIENT.open(doc_name)
   worksheet = sh.worksheet[sheet_name] if sheet_name else sh.get_worksheet(0)
-  return worksheet.get_all_records()
+  return worksheet.get_all_records(), worksheet
+
+def get_all_ids(doc_name: str, sheet_name: str = None):
+  """
+  Fetches all rows from a given Google Sheet worksheet.
+  """
+  sh = settings.GSPREAD_CLIENT.open(doc_name)
+  worksheet = sh.worksheet[sheet_name] if sheet_name else sh.get_worksheet(0)
+  records = worksheet.get_all_records()
+
+  return [record['Student_ID'] for record in records]
+
+
+
+
