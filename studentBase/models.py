@@ -5,6 +5,7 @@ class Profile(models.Model):
     First_Name = models.CharField(max_length=50)
     Middle_Name = models.CharField(max_length=50,null=True,blank=True)
     Last_Name = models.CharField(max_length=50)
+    Gender = models.CharField(max_length=25, null=True, blank=True)
     Grade = models.CharField(max_length=10,null=True,blank=True)
     Photo = models.CharField(null=True, blank=True,max_length=200)
     Schedule = models.CharField(null=True,blank=True, max_length=200)
