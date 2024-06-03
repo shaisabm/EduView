@@ -10,7 +10,7 @@ from .constants import SHEET_NAME
 
 
 def home(request):
-    student_search = request.GET.get(SHEET_NAME)
+    student_search = request.GET.get('Student_ID')
     if student_search is None:
         student_search = ''
     else: student_search = student_search.lower()
