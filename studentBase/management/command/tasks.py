@@ -1,33 +1,18 @@
 from studentBase.models import Profile
 from studentBase.google_services.services import get_all_students, get_all_ids
-
+from studentBase.views import SHEET_NAME
 
 
 def sync_from_sheet_to_profile():
-    students,_ = get_all_students('Students')
-    student_ids = get_all_ids('Students')
+    students,_ = get_all_students(SHEET_NAME)
+    student_ids = get_all_ids(SHEET_NAME)
 
     for student in students:
         student_id = student['Student_ID']
         if type(student_id) == int:
             Profile.objects.update_or_create(
                 Student_ID=student['Student_ID'],
-
-                defaults={
-                    'First_Name':student['First_Name'],
-                    'Middle_Name':student['Middle_Name'],
-                    'Last_Name':student['Last_Name'],
-                    'Photo':student['Photo'],
-                    'Grade':student['Grade'],
-                    'Schedule':student['Schedule'],
-                    'Social_Media':student['Social_Media'],
-                    'Address':student['Address'],
-                    'Email':student['Email'],
-                    'Contact_1':student['Contact_1'],
-                    'Contact_2': student['Contact_2']
-
-
-                }
+                defaults=student
             )
 
 
