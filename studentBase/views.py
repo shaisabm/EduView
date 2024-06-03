@@ -6,9 +6,11 @@ from .models import Profile
 from .forms import UpdateForm
 from .google_services.update_gsheet import data_org
 
+from .constants import SHEET_NAME
+
 
 def home(request):
-    student_search = request.GET.get('Student_ID')
+    student_search = request.GET.get(SHEET_NAME)
     if student_search is None:
         student_search = ''
     else: student_search = student_search.lower()
