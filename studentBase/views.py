@@ -35,7 +35,7 @@ def profile(request,id):
 
 
 def update_profile(request,id):
-    _,worksheet = get_all_students('Students')
+    _,worksheet = get_all_students(SHEET_NAME)
     student = Profile.objects.get(Student_ID=id)
 
     if request.method == 'POST':
@@ -43,7 +43,7 @@ def update_profile(request,id):
 
         if form.is_valid():
             new_id = int(request.POST.get('Student_ID'))
-            id_list = get_all_ids('Students')
+            id_list = get_all_ids(SHEET_NAME)
             row = id_list.index(id)+2
             form = dict(request.POST)
             gsheet_range = row_range(row)
