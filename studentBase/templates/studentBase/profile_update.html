@@ -62,14 +62,7 @@
                                 <hr class="my-4">
                                 <ul class="list-group list-group-flush">
                                     <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
-                                        <h6 class="mb-0">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-globe me-2 icon-inline">
-                                                <circle cx="12" cy="12" r="10"></circle>
-                                                <line x1="2" y1="12" x2="22" y2="12"></line>
-                                                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
-                                            </svg>
-                                            {{ form.Social_Media }}
-                                        </h6>
+                          
                                     </li>
                                 </ul>
                             </div>
@@ -78,105 +71,22 @@
                     <div class="col-lg-8">
                         <div class="card">
                             <div class="card-body">
+                                {% for field in form %}
                                 <!-- Student Information -->
                                 <div class="row mb-3">
                                     <div class="col-sm-3">
-                                        <h4 class="mb-0">Student ID</h4>
+                                        <h4 class="mb-0">{{ field.label}}</h4>
                                     </div>
                                     <div class="col-sm-9 text-secondary">
-                                        {{ form.Student_ID }}
+                                        {% if field.label == 'Schedule' or field.label == 'Photo' %}
+                                        {{ field }} Only can be change via Google Sheet
+                                        {% else %}
+                                        {{ field }}
+                                        {% endif %}
+                                    
                                     </div>
                                 </div>
-                                <div class="row mb-3">
-                                    <div class="col-sm-3">
-                                        <h4 class="mb-0">Grade</h4>
-                                    </div>
-                                    <div class="col-sm-9 text-secondary">
-                                        {{ form.Grade }}
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <div class="col-sm-3">
-                                        <h4 class="mb-0">First Name</h4>
-                                    </div>
-                                    <div class="col-sm-9 text-secondary">
-                                        {{ form.First_Name }}
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <div class="col-sm-3">
-                                        <h4 class="mb-0">Middle Name</h4>
-                                    </div>
-                                    <div class="col-sm-9 text-secondary">
-                                        {{ form.Middle_Name }}
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <div class="col-sm-3">
-                                        <h4 class="mb-0">Last Name</h4>
-                                    </div>
-                                    <div class="col-sm-9 text-secondary">
-                                        {{ form.Last_Name }}
-                                    </div>
-                                </div>
-
-                                <div class="row mb-3">
-                                    <div class="col-sm-3">
-                                        <h4 class="mb-0">Gender</h4>
-                                    </div>
-                                    <div class="col-sm-9 text-secondary">
-                                        {{ form.Gender }}
-                                    </div>
-                                </div>
-
-                                <div class="row mb-3">
-                                    <div class="col-sm-3">
-                                        <h4 class="mb-0">Email</h4>
-                                    </div>
-                                    <div class="col-sm-9 text-secondary">
-                                        {{ form.Email }}
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <div class="col-sm-3">
-                                        <h4 class="mb-0">Mobile 1</h4>
-                                    </div>
-                                    <div class="col-sm-9 text-secondary">
-                                        {{ form.Contact_1 }}
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <div class="col-sm-3">
-                                        <h4 class="mb-0">Mobile 2</h4>
-                                    </div>
-                                    <div class="col-sm-9 text-secondary">
-                                        {{ form.Contact_2 }}
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <div class="col-sm-3">
-                                        <h4 class="mb-0">Address</h4>
-                                    </div>
-                                    <div class="col-sm-9 text-secondary">
-                                        {{ form.Address }}
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <div class="col-sm-3">
-                                        <h4 class="mb-0">Photo</h4>
-                                    </div>
-                                    <div class="col-sm-9 text-secondary">
-                                        {{ form.Photo }} change via google sheet
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <div class="col-sm-3">
-                                        <h4 class="mb-0">Schedule</h4>
-                                    </div>
-                                    <div class="col-sm-9 text-secondary">
-                                        {{ form.Schedule }} change via google sheet
-                                    </div>
-                                </div>
+                                {% endfor %}
                                 <div class="row">
                                     <div class="col-sm-3"></div>
                                     <div class="col-sm-9 text-secondary">

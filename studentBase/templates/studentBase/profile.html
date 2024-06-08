@@ -56,68 +56,18 @@
                     <h4 class="mb-0">Student Details</h4>
                 </div>
                 <div class="card-body">
+                    {% for field,value in student_data.items %}
                     <div class="row">
                         <div class="col-sm-3">
-                            <h4 class="mb-0">Student ID</h4>
+                            <h4 class="mb-0">{{ field}}</h4>
                         </div>
                         <div class="col-sm-9 text-secondary">
-                            {{ student.Student_ID }}
+                            {{ value }}
                         </div>
                     </div>
                     <hr>
-                    <div class="row">
-                        <div class="col-sm-3">
-                            <h4 class="mb-0">Full Name</h4>
-                        </div>
-                        <div class="col-sm-9 text-secondary">
-                            {{ student.First_Name }} {{ student.Middle_Name }} {{ student.Last_Name }}
-                        </div>
-                    </div>
-                    <hr>
-                    <div class="row">
-                        <div class="col-sm-3">
-                            <h4 class="mb-0">Gender</h4>
-                        </div>
-                        <div class="col-sm-9 text-secondary">
-                            {{ student.Gender }}
-                        </div>
-                    </div>
-                    <hr>
-                    <div class="row">
-                        <div class="col-sm-3">
-                            <h4 class="mb-0" >Email</h4>
-                        </div>
-                        <div class="col-sm-9 text-secondary">
-                            <a href="mailto:{{ student.Email }}"> {{ student.Email }}</a>
-                        </div>
-                    </div>
-                    <hr>
-                    <div class="row">
-                        <div class="col-sm-3">
-                            <h4 class="mb-0">Phone</h4>
-                        </div>
-                        <div class="col-sm-9 text-secondary">
-                            {{ student.Contact_1 }}
-                        </div>
-                    </div>
-                    <hr>
-                    <div class="row">
-                        <div class="col-sm-3">
-                            <h4 class="mb-0">Mobile</h4>
-                        </div>
-                        <div class="col-sm-9 text-secondary">
-                            {{ student.Contact_2 }}
-                        </div>
-                    </div>
-                    <hr>
-                    <div class="row">
-                        <div class="col-sm-3">
-                            <h4 class="mb-0">Address</h4>
-                        </div>
-                        <div class="col-sm-9 text-secondary">
-                            {{ student.Address }}
-                        </div>
-                    </div>
+                    {% endfor %}
+                    
                     <hr>
                     <div class="row">
                         <div class="col-sm-12">
