@@ -29,8 +29,15 @@ def home(request):
 
 def profile(request,id):
     student = Profile.objects.get(Student_ID=id)
-
-    return render(request,'studentBase/profile.html',{'student':student})
+    fields = student._meta.fields
+    fields = [field.name for field in fields]
+    student_data = {}
+    exceptions = ['Photo','Schedule','id','Social_Media','Address']
+    for field in fields:
+        if field not in exceptions:
+            student_data[field] = getattr(student,field)
+    context = {'student_data':student_data,'student':student}
+    return render(request,'studentBase/profile.html',context)
 
 
 
@@ -55,7 +62,10 @@ def update_profile(request,id):
 
 
     student = Profile.objects.get(Student_ID=id)
+
     form = UpdateForm(instance=student)
+    for field in form:
+        print(field.label)
     context = {'form':form,'student':student}
     return render(request,'studentBase/profile_update.html',context)
 
