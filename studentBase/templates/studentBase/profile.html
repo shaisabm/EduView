@@ -37,7 +37,7 @@
                     {% if student.Photo != '' %}
                     <iframe src="{{ student.Photo }}" class="avatar-iframe"></iframe>
                     {% else %}
-                    <img src="/media/default-avatar.jpg" alt="default avatar" class="avatar">
+                    <img src="{% static 'media/default-avatar.jpg' %}" alt="default avatar" class="avatar">
                     {% endif %}
                     <h4 class="my-3">{{ student.First_Name }} {{ student.Middle_Name }} {{ student.Last_Name }}</h4>
                     <p class="text-muted mb-1">Grade: {{ student.Grade }}</p>

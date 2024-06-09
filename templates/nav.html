@@ -1,8 +1,8 @@
-
+{% load static %}
     <header class="header header--loggedIn">
       <div class="container">
         <a href="{% url 'home' %}" class="header__logo">
-          <img src="/media/logo.png" alt="EduView"/>
+          <img src="{% static 'media/logo.png' %}" alt="EduView"/>
           <h1>EduView</h1>
         </a>
         <form class="header__search" method="GET" action="{% url 'home' %}">
