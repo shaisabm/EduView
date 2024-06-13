@@ -22,6 +22,9 @@ def home(request):
         Q(Middle_Name__icontains=student_search)
     )
 
+    # _, worksheet = get_all_students(SHEET_NAME)
+    # worksheet.delete_rows(7,7)
+
 
 
     context = {'students': students}
@@ -62,11 +65,25 @@ def update_profile(request,id):
 
 
     student = Profile.objects.get(Student_ID=id)
-
     form = UpdateForm(instance=student)
-    for field in form:
-        print(field.label)
     context = {'form':form,'student':student}
     return render(request,'studentBase/profile_update.html',context)
+
+def delete_student(request,id):
+    _,worksheet = get_all_students(SHEET_NAME)
+    student = Profile.objects.get(Student_ID=id)
+    if request.method == "POST":
+        student_records = worksheet.get_all_records()
+        for s in range(len(student_records)):
+            Student_ID = student_records[s]['Student_ID']
+            if Student_ID == id:
+                row = s+2
+                worksheet.delete_rows(row,row)
+                return redirect('home')
+
+
+
+    context = {'student':student}
+    return render(request,'studentBase/delete_student.html',context)
 
 
