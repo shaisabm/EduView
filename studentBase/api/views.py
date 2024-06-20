@@ -1,8 +1,10 @@
+import time
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from pdf2image import convert_from_path
 import os
 from django.http import HttpResponse
+import shutil
 
 @api_view(['GET'])
 def getRoutes(request):
@@ -29,8 +31,18 @@ def getPdfToPng(request):
 
         image_path = os.path.join(temp_path,image_name+'.jpg')
         with open(image_path,'rb') as img:
+            clearTemp()
             return HttpResponse(img.read(),content_type='image/jpeg')
     except Exception as e:
         print(e)
-        pass
+        clearTemp()
+        return HttpResponse("An error occurred: " + str(e), status=500)
+
+
+def clearTemp():
+    temp = 'static/temp'
+    shutil.rmtree(temp)
+    os.makedirs(temp,exist_ok=True)
+
+
 
