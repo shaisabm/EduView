@@ -1,0 +1,4 @@
+Hi, {{ user.username }},
+    Here is the activation link:
+    http://{{ domain }}/{% url 'activate' uid64=uid token=token%}
+    
