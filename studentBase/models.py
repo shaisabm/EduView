@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import AbstractUser
 
 class Profile(models.Model):
     Student_ID = models.IntegerField(unique=True)
@@ -20,4 +21,12 @@ class Profile(models.Model):
 
     def __str__(self):
         return f"{self.First_Name} {self.Middle_Name} {self.Last_Name}".strip()
+
+class TeacherProfile(AbstractUser):
+    is_teacher = models.BooleanField(null=True)
+    profile_pic = models.ImageField(null=True,blank=True)
+
+    def __str__(self):
+        return f'{self.first_name} {self.last_name} teacher:{self.is_teacher}'.strip()
+
 
