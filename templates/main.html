@@ -9,23 +9,14 @@
     <link rel="shortcut icon" href="#" type="image/x-icon" />
     <link rel="stylesheet" href="{% static 'styles/style.css' %}" />
     <title>EduView</title>
-    <style>
-      body {
-        background-color: #f8f9fa;
-        color: #212529;
-      }
-      .navbar {
-        background-color: #e9ecef;
-      }
-      .navbar-brand,
-      .nav-link {
-        color: #212529;
-      }
-      .nav-link:hover {
-        color: #007bff;
-      }
-    </style>
+
+
+
   </head>
 
-  {% include 'nav.html' %} {% block contain %} {% endblock contain %}
+  {% include 'nav.html' %}
+  {% block contain %}
+
+  {% endblock contain %}
+<script src="{% static 'styles/script.js' %}"></script>
 </html>
