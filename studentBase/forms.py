@@ -33,6 +33,16 @@ class RegisterForm(ModelForm):
         if User.objects.filter(email=email).exists():
             raise ValidationError('An account with this email address already exists!')
         return email
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        user.set_password(self.cleaned_data.get('password'))
+        if self.cleaned_data.get('User_role') == 'Teacher':
+            user.is_teacher = True
+        elif self.cleaned_data.get('User_role') == 'Student': user.is_student = True
+        if commit:
+            user.save()
+        return user
+
 
 
 
