@@ -13,15 +13,21 @@ class UpdateForm(ModelForm):
         self.fields["Schedule"].widget.attrs["readonly"] = True
         self.fields['Photo'].widget.attrs['readonly'] = True
 
-class TeacherProfileForm(ModelForm):
-    email = forms.EmailField(required=True)
+class RegisterForm(ModelForm):
+    user_choices = [('Student','Student'),('Teacher','Teacher')]
+    User_role = forms.ChoiceField(choices=user_choices, required=True)
+
+    email = forms.EmailField(required=True,)
     first_name = forms.CharField(required = True)
     last_name = forms.CharField(required=True)
 
     class Meta:
-        model = TeacherProfile
-        fields = ['username','first_name','last_name','email','password']
-        widgets = {'email':forms.TextInput(attrs={'placeholder':'Only Edu Email Allowed'})}
+        model = User
+        fields = ['username','first_name','last_name','User_role','email','password',]
+        widgets = {
+            'password': forms.PasswordInput(attrs={'placeholder':'**********','autocomplete':'off','data-toggle':'password'})
+        }
+
     def clean_email(self):
         email = self.cleaned_data.get('email')
         if TeacherProfile.objects.filter(email=email).exists():
