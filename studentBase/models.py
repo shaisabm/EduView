@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.core.exceptions import ValidationError
 
 class Profile(models.Model):
     Student_ID = models.IntegerField(unique=True)
@@ -22,9 +23,15 @@ class Profile(models.Model):
     def __str__(self):
         return f"{self.First_Name} {self.Middle_Name} {self.Last_Name}".strip()
 
-class TeacherProfile(AbstractUser):
-    is_teacher = models.BooleanField(null=True)
+class User(AbstractUser):
+    is_teacher = models.BooleanField('Teacher_status',default=False)
+    is_student = models.BooleanField('Student_status',default=False)
     profile_pic = models.ImageField(null=True,blank=True)
+
+    def save(self, *args, **kwargs):
+        if self.is_student and self.is_teacher:
+            raise ValidationError('A user cannot be both a teacher and a student. ')
+        super().save(*args,**kwargs)
 
     def __str__(self):
         return f'{self.first_name} {self.last_name} teacher:{self.is_teacher}'.strip()
