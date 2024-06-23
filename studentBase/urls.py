@@ -8,9 +8,9 @@ urlpatterns = [
     path('student/<int:id>/',views.profile,name = 'profile'),
     path('update-profile/<int:id>',views.update_profile, name='update-profile'),
     path('delete-student/<int:id>', views.delete_student,name='delete_student'),
-    path('login/',views.teacher_login,name='teacher_login'),
-    path('logout/',views.teacher_logout, name='teacher_logout'),
-    path('register/',views.teacher_register, name='teacher_register'),
-    path('acitvate/<str:uid64>/<str:token>', views.activate, name='activate')
+    path('login/',views.teacher_login,name='login'),
+    path('logout/',views.teacher_logout, name='logout'),
+    path('register/',views.teacher_register, name='register'),
+    path('activate/<str:uid>/<str:token>',views.activate,name='activate')
 ]
 urlpatterns += static(settings.MEDIA_URL,document_root = settings.MEDIA_ROOT)
