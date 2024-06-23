@@ -1,4 +1,4 @@
-from .models import Profile, TeacherProfile
+from .models import Profile, User
 from django.forms import ModelForm
 from django import forms
 from django.core.exceptions import ValidationError
@@ -29,8 +29,8 @@ class RegisterForm(ModelForm):
         }
 
     def clean_email(self):
-        email = self.cleaned_data.get('email')
-        if TeacherProfile.objects.filter(email=email).exists():
+        email = self.cleaned_data.get('email').lower()
+        if User.objects.filter(email=email).exists():
             raise ValidationError('An account with this email address already exists!')
         return email
 
