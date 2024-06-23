@@ -1,4 +1,8 @@
-Hi, {{ user.username }},
-    Here is the activation link:
-    http://{{ domain }}/{% url 'activate' uid64=uid token=token%}
+{% if teacher.is_active == False %}
+Hi, {{ teacher.username}},
+    Here is the activation link: http://{{ domain }}{% url 'activate' uid token %}
+{% else %}
+{{ message }}
+{% endif %}
+
     
