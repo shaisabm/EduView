@@ -1,22 +1,29 @@
+import os
+import smtplib
+import time
 from .google_services.services import get_all_ids, get_all_students
 from .google_services.update_gsheet import row_range
 from django.db.models import Q
 from django.shortcuts import render, redirect
 from .models import Profile
-from .forms import UpdateForm, TeacherProfileForm
+from .forms import UpdateForm, RegisterForm
 from .google_services.update_gsheet import data_org
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from .constants import SHEET_NAME
-from django.contrib.sites.shortcuts import get_current_site
-from django.template.loader import render_to_string
-from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
-from django.utils.encoding import force_bytes, force_str
-from .tokens import account_activation_token
-from django.core.mail import EmailMessage
 from django.contrib import messages
-from django.contrib.auth import get_user_model
+from django.template.loader import render_to_string
+from django.contrib.sites.shortcuts import get_current_site
+from .tokens import token_generator
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.core.mail import send_mail
+from django.http import HttpResponse
+from .models import User
+from django.contrib.auth.decorators import user_passes_test
+
+
 
 def teacher_login(request):
     if request.user.is_authenticated:
@@ -28,70 +35,83 @@ def teacher_login(request):
             user = User.objects.get(username=username)
         except: messages.error(request,'Teacher not found')
         user = authenticate(request,username=username,password=password)
+
         if user is not None:
             login(request,user)
-            messages.success(request,'Successfully logged in')
             return redirect('home')
+        else:messages.error(request,'Incorrect password')
 
     return render(request,'studentBase/login.html',)
 
 
 def teacher_register(request):
-    form = TeacherProfileForm
+    if request.user.is_authenticated:
+        return redirect('home')
+    form = RegisterForm
     if request.method == 'POST':
-        form = TeacherProfileForm(request.POST)
+        form = RegisterForm(request.POST)
         if form.is_valid():
             teacher = form.save(commit=False)
+            teacher.email,  teacher.username = teacher.email.lower(), teacher.username.lower()
             teacher.is_active = False
             teacher.save()
             current_site = get_current_site(request)
-            mail_subject = 'Activate your EduView account'
-            message = render_to_string("studentBase/account_activation.html", {
-                'teacher':teacher,
+            message = render_to_string('studentBase/account_activation.html',{
                 'domain':current_site,
+                'token': token_generator.make_token(teacher),
                 'uid': urlsafe_base64_encode(force_bytes(teacher.pk)),
-                'token': account_activation_token.make_token(teacher)
+                'teacher':teacher
 
             })
-
-            to_email = form.cleaned_data.get('email')
-            email = EmailMessage(
-                mail_subject, message, to=[to_email]
+            client_email = request.POST.get('email')
+            send_mail(
+                subject='Verify your email for EduView',
+                recipient_list=[client_email],
+                message=message,
+                from_email=os.environ.get('FROM_EMAIL')
             )
-            email.send()
-            messages.success(request, 'Please check your email to complete registration')
+            messages.success(request,'An verification email has been sent to your email')
 
-
-
+        elif User.objects.filter(username=request.POST.get('username').lower()).exists():
+            messages.error(request, 'Username taken. Please try a different username.')
+        else: messages.error(request, 'An unknown error has occurred!')
 
     context = {'form':form}
-    return render(request, 'studentBase/teacher_register.html',context)
-def activate(request,uid64, token):
-    User = get_user_model()
+    return render(request, 'studentBase/register.html', context)
+
+
+def activate(request, uid, token):
     try:
-        uid = force_str(urlsafe_base64_decode(uid64))
-        user = User.objects.get(pk=uid)
+        uid_decoded = force_bytes(urlsafe_base64_decode(uid))
+        user = User.objects.get(pk=uid_decoded)
     except: user = None
 
-    if user is not None and account_activation_token.check_token(user,token):
+    if user is not None and user.is_active:
+        login(request,user)
+        return redirect('login')
+
+    elif user is not None and token_generator.check_token(user,token):
         user.is_active = True
         user.save()
-        messages.success(request, 'Please wait until the admin give you approval')
-
+        message = 'Your email has been successfully verified!'
     else:
-        messages.error(request, 'Activation link is invalid or expired')
-    return redirect('teacher_register')
+        message = 'The link is either invalid or expired. Please register again'
+
+    context = {'message':message}
+    return render(request,'studentBase/account_activation.html', context)
 
 
 
-
-
-@login_required(login_url='teacher_login')
+@login_required(login_url='login')
 def teacher_logout(request):
     logout(request)
-    return redirect('teacher_login')
+    return redirect('login')
 
-@login_required(login_url='teacher_login')
+
+# def teacher(user):
+#     return user.is_teacher
+@login_required(login_url='login')
+# @user_passes_test(teacher) # set a redirect url to student dashboard
 def home(request):
     student_search = request.GET.get('Student_ID')
     if student_search is None:
@@ -111,7 +131,7 @@ def home(request):
 
     context = {'students': students}
     return render(request, 'studentBase/home.html',context)
-@login_required(login_url='teacher_login')
+@login_required(login_url='login')
 def profile(request,id):
     student = Profile.objects.get(Student_ID=id)
     fields = student._meta.fields
@@ -125,7 +145,7 @@ def profile(request,id):
     return render(request,'studentBase/profile.html',context)
 
 
-@login_required(login_url='teacher_login')
+@login_required(login_url='login')
 def update_profile(request,id):
     _,worksheet = get_all_students(SHEET_NAME)
     student = Profile.objects.get(Student_ID=id)
@@ -151,7 +171,7 @@ def update_profile(request,id):
     context = {'form':form,'student':student}
     return render(request, 'studentBase/profile_update.html', context)
 
-@login_required(login_url='teacher_login')
+@login_required(login_url='login')
 def delete_student(request,id):
     _,worksheet = get_all_students(SHEET_NAME)
     student = Profile.objects.get(Student_ID=id)
