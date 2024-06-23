@@ -11,7 +11,7 @@
             </div>
           </div>
           <div class="layout__body">
-            <h2 class="auth__tagline">Teacher's Register</h2>
+            <h2 class="auth__tagline">Teacher/Student Register</h2>
 
             <form class="form" action="" method="POST">
                 {% csrf_token %}
@@ -30,8 +30,14 @@
                         {% endfor %}
                     </li>
                     </ul>
-                    
                 {% endif %}
+                
+                {% if form.email.errors %}
+                {% for error in form.email.errors %}
+                    {{ error }}
+                {% endfor %}
+            {% endif %}
+            
               <button class="btn btn--main" type="submit">
                 <svg
                   version="1.1"
