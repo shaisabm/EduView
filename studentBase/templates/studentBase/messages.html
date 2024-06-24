@@ -1,0 +1,10 @@
+{% extends 'main.html' %}
+
+{% block contain %}
+    <div style="display: flex; justify-content: center; align-items: center; height: 100vh;">
+        {% for message in messages %}
+            <p style="font-size: 2em;">{{ message }}</p>
+        {% endfor %}
+        <p style="font-size: 2em;">{{ message }}</p>
+    </div>
+{% endblock contain %}
