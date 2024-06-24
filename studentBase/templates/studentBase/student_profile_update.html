@@ -21,25 +21,26 @@
         height: 150px;
         border-radius: 50%;
     }
+    .btn-save-changes {
+        font-size: 1.5rem;
+    }
+    
 </style>
 
 <div class="container py-5">
-    <div class="row">
+    <form method="POST" action="">
+    {% csrf_token %}
+        <div class="row">
         <div class="col-lg-4">
             <div class="card mb-4">
                 <div class="card-body text-center">
                     {% if student.Photo != '' %}
                     <iframe src="{{ student.Photo }}" class="avatar-iframe"></iframe>
                     {% else %}
-                    <img src="{% static 'media/default-avatar.jpg' %}" alt="default avatar" class="avatar">
+                    <img src="/media/default-avatar.jpg" alt="default avatar" class="avatar">
                     {% endif %}
                     <h4 class="my-3">{{ student.First_Name }} {{ student.Middle_Name }} {{ student.Last_Name }}</h4>
-                    <p class="text-muted mb-1">Grade: {{ student.Grade }}</p>
-                    <p class="text-muted mb-4">{{ student.Address }}</p>
-
-                    <div class="text-muted mb-1">
-                        {{ student.Social_Media }}
-                    </div>
+                
 
                 </div>
             </div>
@@ -50,38 +51,37 @@
                     <h4 class="mb-0">Student Details</h4>
                 </div>
                 <div class="card-body">
-                    {% for field,value in student_data.items %}
-                    <div class="row">
-                        <div class="col-sm-3">
-                            <h4 class="mb-0">{{ field}}</h4>
+                    {% for field in form %}
+                        <!-- Student Information -->
+                        <div class="row mb-3">
+                            <div class="col-sm-3">
+                                <h4 class="mb-0">{{ field.label}}</h4>
+                            </div>
+                            <div class="col-sm-9 text-secondary">
+                                {% if field.label == 'Schedule' or field.label == 'Photo' %}
+                                    {{ field }} Only can be change via Google Sheet
+                                {% else %}
+                                    {{ field }}
+                                {% endif %}
+                            </div>
                         </div>
-                        <div class="col-sm-9 text-secondary">
-                            {{ value }}
-                        </div>
-                    </div>
-                    <hr>
                     {% endfor %}
-                    
+                
                     <hr>
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <a class="btn btn-primary" target="_blank" href="{% url 'update-profile' student.Student_ID %}"><h4>Edit</h4></a>
-                            <a class="btn btn-primary" target="_blank" style="background-color: #990000" href="{% url 'delete_student' student.Student_ID %}"><h4>Delete</h4></a>                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="card mb-4">
-                <div class="card-header">
-                    <h4 class="mb-0">Schedule</h4>
-                </div>
-                <div class="card-body">
-                    <iframe src="{{ student.Schedule }}" width="100%" height="380"></iframe>
+                   <div class="row">
+                       <div class="col-sm-3"></div>
+                       <div class="col-sm-9 text-secondary">
+                           <button type="submit" class="btn btn-primary mt-3 btn-save-changes">Save changes</button>
+                       </div>
+                   </div>
+                
                 </div>
             </div>
         </div>
     </div>
+    </form>
 </div>
+
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 {% endblock contain %}
-``

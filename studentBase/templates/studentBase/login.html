@@ -1,8 +1,28 @@
 {% extends 'main.html' %}
 
-    {% block contain %}
-    <main class="auth layout" style="background-color: black; color: white;">
 
+{% block contain %}
+<style>
+    .btn--secondary {
+    background-color: #686c67;
+    color: #ffffff;
+    border: 1px solid #696c69;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    transition-duration: 0.4s;
+    cursor: pointer;
+}
+
+.btn--secondary:hover {
+    background-color: rgb(228, 228, 228);
+    color: #070404;
+}
+</style>        
+    <main class="auth layout" style="background-color: black; color: white;">
       <div class="container">
         <div class="layout__box">
           <div class="layout__boxHeader">
@@ -42,8 +62,7 @@
                   xmlns="http://www.w3.org/2000/svg"
                   width="32"
                   height="32"
-                  viewBox="0 0 32 32"
-                >
+                  viewBox="0 0 32 32">
                   <title>lock</title>
                   <path
                     d="M27 12h-1v-2c0-5.514-4.486-10-10-10s-10 4.486-10 10v2h-1c-0.553 0-1 0.447-1 1v18c0 0.553 0.447 1 1 1h22c0.553 0 1-0.447 1-1v-18c0-0.553-0.447-1-1-1zM8 10c0-4.411 3.589-8 8-8s8 3.589 8 8v2h-16v-2zM26 30h-20v-16h20v16z"
@@ -54,6 +73,15 @@
                 </svg>
                 Login
               </button>
+            
+            <div style="display: flex; flex-direction: column; align-items: center; margin-top: 20px; font-size: small">
+                <p>Doesn't have a account yet?</p>
+                <button style="font-size: small" class="btn btn--secondary" onclick="location.href='{% url 'register' %}'" type="button">
+                    Sign up
+                </button>
+        </div>
+                
+            
             </form>
               
           </div>

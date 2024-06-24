@@ -1157,9 +1157,4 @@ a {
   line-height: 1.2;
 }
 
-.participant span {
-  display: block;
-  font-weight: 500;
-  color: var(--color-main);
-  font-weight: 1.4rem;
-}
+

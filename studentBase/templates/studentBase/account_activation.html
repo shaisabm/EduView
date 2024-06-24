@@ -1,8 +1,5 @@
-{% if teacher.is_active == False %}
 Hi, {{ teacher.username}},
     Here is the activation link: http://{{ domain }}{% url 'activate' uid token %}
-{% else %}
-{{ message }}
-{% endif %}
+
 
     

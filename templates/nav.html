@@ -5,7 +5,7 @@
     <header class="header header--loggedIn">
       <div class="container">
         <a href="{% url 'home' %}" class="header__logo">
-          <img src="{% static 'media/logo.png' %}" alt="EduView"/>
+          <img src="/media/logo.png" alt="EduView"/>
           <h1>EduView</h1>
         </a>
         {% if user.is_authenticated%}
@@ -28,9 +28,9 @@
       <div class="header__user">
         <a href="#">
           <div class="avatar avatar--medium">
-            <img src="#" />
+            <img src="{{ user.profile_pic.url }}" />
           </div>
-          <p>Hello <span>@{{user.username}}</span></p>
+          <p>Hello <span>@{{user.first_name}}</span></p>
         </a>
         <button class="dropdown-button">
           <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
@@ -42,7 +42,7 @@
       {% endif %}
 
    <div class="dropdown-menu" style="background-color: #3f4156">
-        <a href="#" class="dropdown-link"><svg version="1.1" xmlns="http://www.w3.org/2000/svg"
+        <a href="{% url 'setting' %}" class="dropdown-link"><svg version="1.1" xmlns="http://www.w3.org/2000/svg"
             width="32" height="32" viewBox="0 0 32 32">
             <title>tools</title>
             <path
