@@ -1,6 +1,5 @@
 import os
-import smtplib
-import time
+
 from .google_services.services import get_all_ids, get_all_students
 from .google_services.update_gsheet import row_range
 from django.db.models import Q
@@ -16,7 +15,7 @@ from django.contrib import messages
 from django.template.loader import render_to_string
 from django.contrib.sites.shortcuts import get_current_site
 from .tokens import token_generator
-from django.utils.encoding import force_bytes
+from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.core.mail import send_mail
 from django.http import HttpResponse
@@ -114,6 +113,43 @@ def activate(request, uid, token):
     return render(request,'studentBase/messages.html', context)
 
 
+def teacher_approval(request, pk_encoded):
+    try:
+        pk = force_str(urlsafe_base64_decode(pk_encoded))
+        user = User.objects.get(pk=pk)
+    except:
+        user =None
+        messages.error(request, 'User doesn\'t exist')
+        return render(request,'studentBase/messages.html')
+    if user != None and user.is_active == True:
+        message = "This person's account is already approved"
+        return render(request,'studentBase/messages.html',{"message":message})
+    if request.method == 'POST':
+        admin_email = os.environ.get('FROM_EMAIL')
+        if 'approve' in request.POST:
+            user.is_active = True
+            user.save()
+            send_mail(
+                subject='EduView account approved',
+                message= f'Admin approved your EduView account! Please login via http://{get_current_site(request)}/login',
+                from_email=admin_email,
+                recipient_list=[user.email]
+            )
+            return redirect('home')
+        else:
+            send_mail(
+                subject='Admin did not approved your EduView account!',
+                message=f'Sorry to inform you that the admin declined your account. '
+                        f'Please contact admin at {admin_email} for more information.',
+                from_email=admin_email,
+                recipient_list=[user.email]
+            )
+            user.delete()
+            return redirect('home')
+
+
+    context = {'pending_user':user}
+    return render(request,'studentBase/approval.html',context)
 
 
 @login_required(login_url='login')
