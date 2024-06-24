@@ -3,7 +3,7 @@ from django.forms import ModelForm
 from django import forms
 from django.core.exceptions import ValidationError
 
-class UpdateForm(ModelForm):
+class UpdateForm(ModelForm): # this use to update the students info only
     class Meta:
         model = Profile
         fields ='__all__'
@@ -42,6 +42,14 @@ class RegisterForm(ModelForm):
         if commit:
             user.save()
         return user
+
+
+class UpdateUserForm(ModelForm):
+
+    class Meta:
+        model = User
+        fields = ['first_name','last_name','email']
+
 
 
 

@@ -252,4 +252,21 @@ def delete_student(request,id):
     return render(request,'studentBase/delete_student.html',context)
 
 
+def setting(request):
+    user = request.user
+    form = UpdateUserForm(instance=user)
+    if request.method == 'POST':
+        form = UpdateUserForm(request.POST,instance=user)
+        if form.is_valid():
+            form.save()
+    context = {'form':form}
+    return render(request, 'studentBase/user_setting.html', context)
+def teacher_delete(request):
+    user = request.user
+    if request.method == 'POST':
+        user.delete()
+        redirect('login')
+    return render(request,'studentBase/delete_student.html',{'student':user})
+
+
 
