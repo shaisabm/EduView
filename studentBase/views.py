@@ -209,8 +209,7 @@ def profile(request,id):
     print(viewed_profiles)
 
     context = {'student_data':student_data,'student':student}
-    return render(request,'studentBase/profile.html',context)
-
+    return render(request, 'studentBase/student.html', context)
 
 @login_required(login_url='login')
 def update_profile(request,id):
@@ -231,12 +230,10 @@ def update_profile(request,id):
 
             return redirect('home',)
 
-
-
     student = Profile.objects.get(Student_ID=id)
     form = UpdateForm(instance=student)
     context = {'form':form,'student':student}
-    return render(request, 'studentBase/profile_update.html', context)
+    return render(request, 'studentBase/student_profile_update.html', context)
 
 @login_required(login_url='login')
 def delete_student(request,id):
