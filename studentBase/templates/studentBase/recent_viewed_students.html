@@ -1,0 +1,45 @@
+<style>
+    .avatar-iframe {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+    }
+
+    .activities {
+        margin-left: 1px; /* Add this line */
+    }
+    
+    .activities__box {
+  margin: 1.5rem;
+  padding: 1.5rem;
+  border: 1px solid var(--color-dark-medium);
+  border-radius: 30px;
+}
+    
+</style>
+<div class="activities">
+  <div class="activities__header">
+    <h2>Recent Viewed Profile</h2>
+  </div>
+  {% for profile in viewed_profiles %}
+  <div class="activities__box">
+    <div class="activities__boxHeader roomListRoom__header">
+      <a href="{% url 'profile' profile.Student_ID %}" class="roomListRoom__author">
+        <div class="avatar avatar--small">
+            {% if profile.Photo != '' %}
+                <iframe src="{{ profile.Photo }}" class="avatar-iframe"></iframe>
+            {% else %}
+                <img src="/media/default-avatar.jpg" alt="">
+            {% endif %}
+        
+        </div>
+        <p style="color: #e1f6fb">
+          {{ profile}}
+            <span style='color: #4ac1f7'>{{profile.Student_ID}}</span>
+        </p>
+      </a>
+    </div>
+  
+  </div>
+  {% endfor %}
+</div>

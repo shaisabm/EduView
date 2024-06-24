@@ -5,7 +5,7 @@ from .google_services.update_gsheet import row_range
 from django.db.models import Q
 from django.shortcuts import render, redirect
 from .models import Profile
-from .forms import UpdateForm, RegisterForm
+from .forms import UpdateForm, RegisterForm, UpdateUserForm
 from .google_services.update_gsheet import data_org
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.models import User
@@ -163,6 +163,7 @@ def teacher_logout(request):
 @login_required(login_url='login')
 # @user_passes_test(teacher) # set a redirect url to student dashboard
 def home(request):
+
     student_search = request.GET.get('Student_ID')
     if student_search is None:
         student_search = ''
@@ -174,13 +175,14 @@ def home(request):
         Q(Last_Name__icontains=student_search)|
         Q(Middle_Name__icontains=student_search)
     )
+    viewed_profiles_list = request.session.get('viewed_profiles',[])
+    viewed_profiles = Profile.objects.filter(Student_ID__in=viewed_profiles_list)
+    viewed_profiles = sorted(viewed_profiles, key= lambda profile: viewed_profiles_list.index(profile.Student_ID))
 
-
-
-
-
-    context = {'students': students}
+    context = {'students': students,'viewed_profiles':viewed_profiles}
     return render(request, 'studentBase/home.html',context)
+
+
 @login_required(login_url='login')
 def profile(request,id):
     student = Profile.objects.get(Student_ID=id)
@@ -191,6 +193,21 @@ def profile(request,id):
     for field in fields:
         if field not in exceptions:
             student_data[field] = getattr(student,field)
+
+    viewed_profiles_list = request.session.get('viewed_profiles',[])
+
+    if id not in viewed_profiles_list:
+        viewed_profiles_list.insert(0,id)
+        if len(viewed_profiles_list) >= 15:
+            viewed_profiles_list.pop()
+    else:
+        viewed_profiles_list.remove(id)
+        viewed_profiles_list.insert(0, id)
+    request.session['viewed_profiles'] = viewed_profiles_list
+
+    viewed_profiles = Profile.objects.filter(Student_ID__in=viewed_profiles_list)
+    print(viewed_profiles)
+
     context = {'student_data':student_data,'student':student}
     return render(request,'studentBase/profile.html',context)
 
