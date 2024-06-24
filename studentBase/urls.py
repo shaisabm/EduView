@@ -11,6 +11,8 @@ urlpatterns = [
     path('login/',views.teacher_login,name='login'),
     path('logout/',views.teacher_logout, name='logout'),
     path('register/',views.teacher_register, name='register'),
-    path('activate/<str:uid>/<str:token>',views.activate,name='activate')
+    path('activate/<str:uid>/<str:token>',views.activate,name='activate'),
+    path('setting/',views.setting,name='setting'),
+    path('delete-teacher/',views.teacher_delete,name='delete_teacher'),
+    path('approval/<str:pk_encoded>',views.teacher_approval,name='teacher_approval')
 ]
-urlpatterns += static(settings.MEDIA_URL,document_root = settings.MEDIA_ROOT)

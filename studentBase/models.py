@@ -17,16 +17,14 @@ class Profile(models.Model):
     Contact_1 = models.CharField(max_length=12,null=True,blank=True)
     Contact_2 = models.CharField(max_length=12,null=True, blank=True)
 
-
-
-
     def __str__(self):
         return f"{self.First_Name} {self.Middle_Name} {self.Last_Name}".strip()
 
 class User(AbstractUser):
     is_teacher = models.BooleanField('Teacher_status',default=False)
     is_student = models.BooleanField('Student_status',default=False)
-    profile_pic = models.ImageField(null=True,blank=True)
+    profile_pic = models.ImageField(default='default-avatar.jpg',upload_to='media/')
+    is_email_verified = models.BooleanField('Email_status', default=False)
 
     def save(self, *args, **kwargs):
         if self.is_student and self.is_teacher:

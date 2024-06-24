@@ -51,16 +51,17 @@ def teacher_register(request):
     if request.method == 'POST':
         form = RegisterForm(request.POST)
         if form.is_valid():
-            teacher = form.save(commit=False)
-            teacher.email,  teacher.username = teacher.email.lower(), teacher.username.lower()
-            teacher.is_active = False
-            teacher.save()
+            user = form.save(commit=False)
+            user.email, user.username = user.email.lower(), user.username.lower()
+            user.is_active = False
+            if form.cleaned_data['User_role'] == 'Teacher': user.is_teacher = True
+            user.save()
             current_site = get_current_site(request)
             message = render_to_string('studentBase/account_activation.html',{
                 'domain':current_site,
-                'token': token_generator.make_token(teacher),
-                'uid': urlsafe_base64_encode(force_bytes(teacher.pk)),
-                'teacher':teacher
+                'token': token_generator.make_token(user),
+                'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+                'teacher':user
 
             })
             client_email = request.POST.get('email')
@@ -82,23 +83,36 @@ def teacher_register(request):
 
 def activate(request, uid, token):
     try:
-        uid_decoded = force_bytes(urlsafe_base64_decode(uid))
-        user = User.objects.get(pk=uid_decoded)
+        pk = force_str(urlsafe_base64_decode(uid))
+        user = User.objects.get(pk=pk)
     except: user = None
 
-    if user is not None and user.is_active:
-        login(request,user)
-        return redirect('login')
+    if user is not None and user.is_teacher:
 
-    elif user is not None and token_generator.check_token(user,token):
-        user.is_active = True
-        user.save()
-        message = 'Your email has been successfully verified!'
-    else:
-        message = 'The link is either invalid or expired. Please register again'
+        if user.is_email_verified:
+            message = 'Email is already verified. Please wait for admin to approve your account.'
+            return render(request,'studentBase/messages.html',{'message':message})
+
+        elif token_generator.check_token(user,token):
+            user.is_email_verified = True
+            user.save()
+            message = 'Your email has been successfully verified. Please wait for admin to approve your teacher account'
+            current_site = get_current_site(request)
+            encoded_pk = urlsafe_base64_encode(force_bytes(user.pk))
+            approval_message = str(f"Approval request from {user.first_name} {user.last_name}: http://{current_site}/approval/{encoded_pk}")
+            send_mail(
+                subject=f'Approval request from {user.first_name} {user.last_name}',
+                message=approval_message,
+                from_email=os.environ.get('FROM_EMAIL'),
+                recipient_list=[os.environ.get('ADMIN_EMAIL')]
+            )
+
+        else: message = 'The link is either invalid or expired. Please register again'
+    elif user is None: message = 'User does not exist'
 
     context = {'message':message}
-    return render(request,'studentBase/account_activation.html', context)
+    return render(request,'studentBase/messages.html', context)
+
 
 
 
