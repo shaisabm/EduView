@@ -1,5 +1,5 @@
 from .models import Profile, User
-from django.forms import ModelForm
+from django.forms import ModelForm, ClearableFileInput
 from django import forms
 from django.core.exceptions import ValidationError
 
@@ -14,7 +14,7 @@ class UpdateForm(ModelForm): # this use to update the students info only
         self.fields['Photo'].widget.attrs['readonly'] = True
 
 class RegisterForm(ModelForm):
-    user_choices = [('Student','Student'),('Teacher','Teacher')]
+    user_choices = [('Teacher','Teacher'),('Student','Student')]
     User_role = forms.ChoiceField(choices=user_choices, required=True)
 
     email = forms.EmailField(required=True,)
@@ -27,6 +27,7 @@ class RegisterForm(ModelForm):
         widgets = {
             'password': forms.PasswordInput(attrs={'placeholder':'**********','autocomplete':'off','data-toggle':'password'})
         }
+
 
     def clean_email(self):
         email = self.cleaned_data.get('email').lower()
@@ -44,11 +45,19 @@ class RegisterForm(ModelForm):
         return user
 
 
-class UpdateUserForm(ModelForm):
 
+class CustomClearableFileInput(ClearableFileInput):
+    def get_context(self, name, value, attrs):
+        context = super().get_context(name, value, attrs)
+        context['widget']['is_initial'] = False
+        return context
+
+class UpdateUserForm(ModelForm):
     class Meta:
         model = User
-        fields = ['first_name','last_name','email']
+        fields = ['first_name','last_name','profile_pic','email']
+        widgets = {'profile_pic':CustomClearableFileInput}
+
 
 
 
