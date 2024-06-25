@@ -5,27 +5,18 @@ from studentBase.views import SHEET_NAME
 
 def sync_from_sheet_to_profile():
     try:
-        students,_ = get_all_students(SHEET_NAME)
+        students, _ = get_all_students(SHEET_NAME)
         student_ids = get_all_ids(SHEET_NAME)
         for student in students:
-            student_id = student['Student_ID']
+            student_id = student["Student_ID"]
             if type(student_id) == int:
                 Profile.objects.update_or_create(
-                    Student_ID=student['Student_ID'],
-                    defaults=student
+                    Student_ID=student["Student_ID"], defaults=student
                 )
-
 
         for object in Profile.objects.all():
             if object.Student_ID not in student_ids:
                 object.delete()
 
-    except: print('Maximum api request exceed')
-
-
-
-
-
-
-
-
+    except:
+        print("Maximum api request exceed")
