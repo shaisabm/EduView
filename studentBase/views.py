@@ -236,14 +236,17 @@ def profile(request,id):
 
 @login_required(login_url='login')
 def update_profile(request,id):
-    _,worksheet = get_all_students(SHEET_NAME)
+    try:
+        _,worksheet = get_all_students(SHEET_NAME)
+    except:
+        messages.error(request, 'Please wait 10 to 30 seconds before trying again.')
+        return redirect('profile',id)
     student = Profile.objects.get(Student_ID=id)
 
     if request.method == 'POST':
         form = UpdateForm(request.POST, instance=student)
 
         if form.is_valid():
-            new_id = int(request.POST.get('Student_ID'))
             id_list = get_all_ids(SHEET_NAME)
             row = id_list.index(id)+2
             form = dict(request.POST)
