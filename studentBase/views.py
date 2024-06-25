@@ -58,15 +58,24 @@ def teacher_register(request):
             user.email, user.username = user.email.lower(), user.username.lower()
             user.is_active = False
             if form.cleaned_data['User_role'] == 'Teacher': user.is_teacher = True
-            user.save()
+            elif form.cleaned_data['User_role'] == 'Student':
+                user.is_student = True
+                user.student_id = int(request.POST.get('student_id'))
             current_site = get_current_site(request)
-            message = render_to_string('studentBase/account_activation.html',{
-                'domain':current_site,
-                'token': token_generator.make_token(user),
-                'uid': urlsafe_base64_encode(force_bytes(user.pk)),
-                'teacher':user
+            user.save()
+            try:
+                message = render_to_string('studentBase/account_activation.html',{
+                    'domain':current_site,
+                    'token': token_generator.make_token(user),
+                    'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+                    'user':user
 
-            })
+                })
+            except:
+                messages.error('Something wrong with the email verification system. Please contact admin')
+                return redirect('register')
+
+
             client_email = request.POST.get('email')
             send_mail(
                 subject='Verify your email for EduView',
@@ -111,7 +120,15 @@ def activate(request, uid, token):
             )
 
         else: message = 'The link is either invalid or expired. Please register again'
-    elif user is None: message = 'User does not exist'
+
+    elif user is not None and user.is_student:
+        user.is_active = True
+        user.is_email_verified = True
+        user.save()
+        messages.success(request,'Email successfully verified. Please login')
+        return redirect('login')
+
+    else: message = 'User does not exist'
 
     context = {'message':message}
     return render(request,'studentBase/messages.html', context)
