@@ -294,7 +294,7 @@ def teacher_delete(request):
     user = request.user
     if request.method == 'POST':
         user.delete()
-        redirect('login')
+        return redirect('login')
     return render(request,'studentBase/delete_student.html',{'student':user})
 
 
