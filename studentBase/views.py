@@ -32,15 +32,19 @@ def teacher_login(request):
         password = request.POST.get('password')
         try:
             user = User.objects.get(username=username)
-        except: messages.error(request,'Teacher not found')
+        except:
+            messages.error(request,'Teacher not found')
+            return redirect('login')
         user = authenticate(request,username=username,password=password)
 
         if user is not None:
             login(request,user)
             return redirect('home')
-        else:messages.error(request,'Incorrect password')
+        else: messages.error(request,'Incorrect password')
 
     return render(request,'studentBase/login.html',)
+
+
 
 
 def teacher_register(request):
