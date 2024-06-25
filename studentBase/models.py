@@ -25,10 +25,13 @@ class User(AbstractUser):
     is_student = models.BooleanField('Student_status',default=False)
     profile_pic = models.ImageField(default='default-avatar.jpg',upload_to='media/')
     is_email_verified = models.BooleanField('Email_status', default=False)
+    student_id = models.IntegerField(unique=True,null=True)
 
     def save(self, *args, **kwargs):
         if self.is_student and self.is_teacher:
             raise ValidationError('A user cannot be both a teacher and a student. ')
+        if self.is_student and self.is_student is None:
+            raise ValidationError('Student must have a id')
         super().save(*args,**kwargs)
 
     def __str__(self):
