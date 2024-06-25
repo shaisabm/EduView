@@ -228,8 +228,6 @@ def profile(request,id):
         viewed_profiles_list.insert(0, id)
     request.session['viewed_profiles'] = viewed_profiles_list
 
-    viewed_profiles = Profile.objects.filter(Student_ID__in=viewed_profiles_list)
-    print(viewed_profiles)
 
     context = {'student_data':student_data,'student':student}
     return render(request, 'studentBase/student.html', context)
