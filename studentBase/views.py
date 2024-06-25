@@ -283,11 +283,13 @@ def setting(request):
     user = request.user
     form = UpdateUserForm(instance=user)
     if request.method == 'POST':
-        form = UpdateUserForm(request.POST,instance=user)
+        form = UpdateUserForm(request.POST or None,request.FILES or None,instance=user)
         if form.is_valid():
             form.save()
     context = {'form':form}
     return render(request, 'studentBase/user_setting.html', context)
+
+
 def teacher_delete(request):
     user = request.user
     if request.method == 'POST':
