@@ -179,10 +179,10 @@ def teacher_logout(request):
     return redirect('login')
 
 
-# def teacher(user):
-#     return user.is_teacher
+def teacher(user):
+    return user.is_teacher
 @login_required(login_url='login')
-# @user_passes_test(teacher) # set a redirect url to student dashboard
+#@user_passes_test(teacher,login_url='#') set a redirect url to student dashboard
 def home(request):
 
     student_search = request.GET.get('Student_ID')
@@ -257,6 +257,7 @@ def update_profile(request,id):
     return render(request, 'studentBase/student_profile_update.html', context)
 
 @login_required(login_url='login')
+@user_passes_test(teacher,login_url='#')
 def delete_student(request,id):
     _,worksheet = get_all_students(SHEET_NAME)
     student = Profile.objects.get(Student_ID=id)
