@@ -94,6 +94,7 @@ def teacher_register(request):
 
 
 def activate(request, uid, token):
+
     try:
         pk = force_str(urlsafe_base64_decode(uid))
         user = User.objects.get(pk=pk)
@@ -112,13 +113,14 @@ def activate(request, uid, token):
             current_site = get_current_site(request)
             encoded_pk = urlsafe_base64_encode(force_bytes(user.pk))
             approval_message = str(f"Approval request from {user.first_name} {user.last_name}: http://{current_site}/approval/{encoded_pk}")
-            send_mail(
-                subject=f'Approval request from {user.first_name} {user.last_name}',
-                message=approval_message,
-                from_email=os.environ.get('FROM_EMAIL'),
-                recipient_list=[os.environ.get('ADMIN_EMAIL')]
-            )
-
+            try:
+                send_mail(
+                    subject=f'Approval request from {user.first_name} {user.last_name}',
+                    message=approval_message,
+                    from_email=os.environ.get('FROM_EMAIL'),
+                    recipient_list=[os.environ.get('ADMIN_EMAIL')]
+                )
+            except: message = 'Unable to send approval request to the admin. Please contact admin'
         else: message = 'The link is either invalid or expired. Please register again'
 
     elif user is not None and user.is_student:
