@@ -212,7 +212,7 @@ def teacher_approval(request, pk_encoded):
             send_mail(
                 subject="Admin did not approved your EduView account!",
                 message=f"Sorry to inform you that the admin declined your account. "
-                f"Please contact admin at {admin_email} for more information.",
+                        f"Please contact admin at {admin_email} for more information.",
                 from_email=admin_email,
                 recipient_list=[user.email],
             )
