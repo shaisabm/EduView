@@ -1,5 +1,4 @@
 import os
-
 from .google_services.services import get_all_ids, get_all_students
 from .google_services.update_gsheet import row_range
 from django.db.models import Q
@@ -254,6 +253,13 @@ def home(request):
         viewed_profiles,
         key=lambda profile: viewed_profiles_list.index(profile.Student_ID),
     )
+    if request.user.is_student:
+        user = request.user
+        student_id = user.student_id
+        student = Profile.objects.filter(Student_ID=student_id).exists()
+        if not student:
+            messages.error(request, 'Your id does not exist on the google sheet. Please contact admin')
+            return render(request, 'studentBase/messages.html')
 
     context = {"students": students, "viewed_profiles": viewed_profiles}
     return render(request, "studentBase/home.html", context)
@@ -261,6 +267,10 @@ def home(request):
 
 @login_required(login_url="login")
 def profile(request, id):
+    user = request.user
+    if user.is_student and user.student_id != id:
+        return redirect('profile', id=user.student_id)
+
     student = Profile.objects.get(Student_ID=id)
     fields = student._meta.fields
     fields = [field.name for field in fields]
@@ -329,26 +339,42 @@ def delete_student(request, id):
                 worksheet.delete_rows(row, row)
                 return redirect("home")
 
-    context = {"student": student}
-    return render(request, "studentBase/delete_student.html", context)
+    context = {"user": student}
+    return render(request, "studentBase/delete.html", context)
 
 
 def setting(request):
     user = request.user
     form = UpdateUserForm(instance=user)
+
     if request.method == "POST":
         form = UpdateUserForm(
             request.POST or None, request.FILES or None, instance=user
         )
         if form.is_valid():
-            form.save()
+            valid_form = form.save(commit=False)
+            old_email = User.objects.get(pk=user.pk).email
+            valid_form.email = request.POST.get('email').lower()
+            valid_form.save()
+            messages.success(request, 'Successfully updated.')
+            new_email = user.email
+            if new_email != old_email:
+                user.is_email_verified = False
+                user.is_active = False
+                user.save()
+                send_email_verification(request, user)
+                messages.success(request, 'Email verification link has been sent to your email! ')
+                redirect('login')
+        else:
+            messages.error(request, 'Failed to update. This email is associated with another account.')
+
     context = {"form": form}
     return render(request, "studentBase/user_setting.html", context)
 
 
-def teacher_delete(request):
+def delete_user(request):
     user = request.user
     if request.method == "POST":
         user.delete()
         return redirect("login")
-    return render(request, "studentBase/delete_student.html", {"student": user})
+    return render(request, "studentBase/delete.html", {"user": user})
