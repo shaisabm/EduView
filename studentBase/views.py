@@ -24,7 +24,7 @@ from django.contrib.auth.decorators import user_passes_test
 from django.views.generic import FormView
 
 
-def teacher_login(request):
+def user_login(request):
     if request.user.is_authenticated:
         return redirect("home")
     if request.method == "POST":
