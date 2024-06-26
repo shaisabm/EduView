@@ -33,15 +33,21 @@ def user_login(request):
         try:
             user = User.objects.get(username=username)
         except:
-            messages.error(request, "Teacher not found")
-            return redirect("login")
-        user = authenticate(request, username=username, password=password)
+            user = None
 
-        if user is not None:
-            login(request, user)
-            return redirect("home")
+        if user is not None and user.is_active and user.is_email_verified:
+            if user is not None:
+                user = authenticate(request, username=username, password=password)
+                login(request, user)
+                return redirect("home")
+
+            else:
+                messages.error(request, "Incorrect password")
+        elif user is not None and (not user.is_active or not user.is_email_verified):
+            messages.error(request, 'Either your email is not verified or admin did not activated your account')
         else:
-            messages.error(request, "Incorrect password")
+            messages.error(request, "User not found.")
+            return redirect("login")
 
     return render(
         request,
