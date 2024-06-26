@@ -27,7 +27,7 @@ class User(AbstractUser):
     is_student = models.BooleanField("Student_status", default=False)
     profile_pic = models.ImageField(default="default-avatar.jpg", upload_to="media/")
     is_email_verified = models.BooleanField("Email_status", default=False)
-    student_id = models.IntegerField(unique=True, null=True)
+    student_id = models.IntegerField(unique=True, null=True, blank=True)
 
     def save(self, *args, **kwargs):
         if self.is_student and self.is_teacher:
