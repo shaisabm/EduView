@@ -236,7 +236,6 @@ def teacher(user):
 @login_required(login_url="login")
 # @user_passes_test(teacher,login_url='#') set a redirect url to student dashboard
 def home(request):
-
     student_search = request.GET.get("Student_ID")
     if student_search is None:
         student_search = ""
