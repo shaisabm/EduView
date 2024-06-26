@@ -4,7 +4,11 @@
     <div>
         <h1 class="text-center mb-4" style="color: #990000">Delete Student</h1>
         <div class="alert alert-danger" role="alert">
-            Are you sure you want to delete the student with ID: {{ student.Student_ID }}?
+            {% if user.username != None %}
+            Are you sure you want to delete {{ user.username }}?
+            {% else %}
+            Are you sure you want to delete {{ user.Student_ID }}?
+            {% endif %}
         </div>
         <form method="POST" action =''>
             {% csrf_token %}
