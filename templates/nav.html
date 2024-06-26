@@ -27,10 +27,17 @@
       {% if user.is_authenticated %}
       <div class="header__user">
         <p>
-          <div class="avatar avatar--medium">
-            <img src="{{ user.profile_pic.url }}" />
-          </div>
-          <p style="color: white">Hello <span>@{{user.first_name}}</span></p>
+          {% if user.is_student != True %}
+              <div class="avatar avatar--medium">
+                <img src="{{ user.profile_pic.url }}" />
+              </div>
+            {% endif %}
+
+            {% if user.is_student %}
+                <p style="color: white">Hello <span><a style="color: #2aabd2" href="{% url 'profile' user.student_id %}">@{{user.first_name}}</a></span></p>
+            {% else %}
+                <p style="color: white">Hello <span>@{{user.first_name}}</span></p>
+            {% endif %}
         </p>
         <button class="dropdown-button">
           <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
