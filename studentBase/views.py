@@ -22,7 +22,6 @@ from .models import User
 from django.contrib.auth.decorators import user_passes_test
 from django.views.generic import FormView
 
-
 def user_login(request):
     if request.user.is_authenticated:
         return redirect("home")
