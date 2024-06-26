@@ -13,6 +13,14 @@ class UpdateForm(ModelForm):  # this use to update the students info only
         super().__init__(*args, **kwargs)
         self.fields["Schedule"].widget.attrs["readonly"] = True
         self.fields["Photo"].widget.attrs["readonly"] = True
+        student_id = self.instance.Student_ID
+        user = User.objects.get(student_id=student_id)
+        if user.is_student:
+            self.fields["Student_ID"].widget.attrs["readonly"] = True
+            self.fields["First_Name"].widget.attrs["readonly"] = True
+            self.fields["Middle_Name"].widget.attrs["readonly"] = True
+            self.fields["Last_Name"].widget.attrs["readonly"] = True
+            self.fields["Grade"].widget.attrs["readonly"] = True
 
 
 class RegisterForm(ModelForm):
@@ -47,7 +55,7 @@ class RegisterForm(ModelForm):
 
     def clean_email(self):
         email = self.cleaned_data.get("email").lower()
-        if User.objects.filter(email=email).exists():
+        if User.objects.filter(email=email).exists() and User.objects.get(email=email).is_email_verified:
             raise ValidationError("An account with this email address already exists!")
         return email
 
@@ -75,3 +83,15 @@ class UpdateUserForm(ModelForm):
         model = User
         fields = ["first_name", "last_name", "profile_pic", "email"]
         widgets = {"profile_pic": CustomClearableFileInput}
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args,**kwargs)
+        if self.instance.is_student:
+            del self.fields['profile_pic']
+    def clean_email(self):
+        new_email = self.cleaned_data.get('email').lower()
+        old_email = self.instance.email
+        if User.objects.filter(email=new_email).exists() and new_email != old_email:
+            raise ValidationError('This email is associated with another account!')
+        return new_email
+
