@@ -55,7 +55,10 @@ class RegisterForm(ModelForm):
 
     def clean_email(self):
         email = self.cleaned_data.get("email").lower()
-        if User.objects.filter(email=email).exists() and User.objects.get(email=email).is_email_verified:
+        if (
+            User.objects.filter(email=email).exists()
+            and User.objects.get(email=email).is_email_verified
+        ):
             raise ValidationError("An account with this email address already exists!")
         return email
 
@@ -85,13 +88,13 @@ class UpdateUserForm(ModelForm):
         widgets = {"profile_pic": CustomClearableFileInput}
 
     def __init__(self, *args, **kwargs):
-        super().__init__(*args,**kwargs)
+        super().__init__(*args, **kwargs)
         if self.instance.is_student:
-            del self.fields['profile_pic']
+            del self.fields["profile_pic"]
+
     def clean_email(self):
-        new_email = self.cleaned_data.get('email').lower()
+        new_email = self.cleaned_data.get("email").lower()
         old_email = self.instance.email
         if User.objects.filter(email=new_email).exists() and new_email != old_email:
-            raise ValidationError('This email is associated with another account!')
+            raise ValidationError("This email is associated with another account!")
         return new_email
-

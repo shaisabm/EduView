@@ -22,6 +22,7 @@ from .models import User
 from django.contrib.auth.decorators import user_passes_test
 from django.views.generic import FormView
 
+
 def user_login(request):
     if request.user.is_authenticated:
         return redirect("home")
@@ -42,7 +43,10 @@ def user_login(request):
             else:
                 messages.error(request, "Incorrect password")
         elif user is not None and (not user.is_active or not user.is_email_verified):
-            messages.error(request, 'Either your email is not verified or admin did not activated your account')
+            messages.error(
+                request,
+                "Either your email is not verified or admin did not activated your account",
+            )
         else:
             messages.error(request, "User not found.")
             return redirect("login")
@@ -110,8 +114,8 @@ class UserRegisterView(FormView):
         username = self.request.POST.get("username").lower()
 
         if (
-                User.objects.filter(username=username).exists()
-                and User.objects.get(username=username).is_email_verified == False
+            User.objects.filter(username=username).exists()
+            and User.objects.get(username=username).is_email_verified == False
         ):
             user = User.objects.get(username=username)
             send_email_verification(self.request, user)
@@ -210,7 +214,7 @@ def teacher_approval(request, pk_encoded):
             send_mail(
                 subject="Admin did not approved your EduView account!",
                 message=f"Sorry to inform you that the admin declined your account. "
-                        f"Please contact admin at {admin_email} for more information.",
+                f"Please contact admin at {admin_email} for more information.",
                 from_email=admin_email,
                 recipient_list=[user.email],
             )
@@ -257,8 +261,11 @@ def home(request):
         student_id = user.student_id
         student = Profile.objects.filter(Student_ID=student_id).exists()
         if not student:
-            messages.error(request, 'Your id does not exist on the google sheet. Please contact admin')
-            return render(request, 'studentBase/messages.html')
+            messages.error(
+                request,
+                "Your id does not exist on the google sheet. Please contact admin",
+            )
+            return render(request, "studentBase/messages.html")
 
     context = {"students": students, "viewed_profiles": viewed_profiles}
     return render(request, "studentBase/home.html", context)
@@ -268,7 +275,7 @@ def home(request):
 def profile(request, id):
     user = request.user
     if user.is_student and user.student_id != id:
-        return redirect('profile', id=user.student_id)
+        return redirect("profile", id=user.student_id)
 
     student = Profile.objects.get(Student_ID=id)
     fields = student._meta.fields
@@ -353,19 +360,24 @@ def setting(request):
         if form.is_valid():
             valid_form = form.save(commit=False)
             old_email = User.objects.get(pk=user.pk).email
-            valid_form.email = request.POST.get('email').lower()
+            valid_form.email = request.POST.get("email").lower()
             valid_form.save()
-            messages.success(request, 'Successfully updated.')
+            messages.success(request, "Successfully updated.")
             new_email = user.email
             if new_email != old_email:
                 user.is_email_verified = False
                 user.is_active = False
                 user.save()
                 send_email_verification(request, user)
-                messages.success(request, 'Email verification link has been sent to your email! ')
-                redirect('login')
+                messages.success(
+                    request, "Email verification link has been sent to your email! "
+                )
+                redirect("login")
         else:
-            messages.error(request, 'Failed to update. This email is associated with another account.')
+            messages.error(
+                request,
+                "Failed to update. This email is associated with another account.",
+            )
 
     context = {"form": form}
     return render(request, "studentBase/user_setting.html", context)
