@@ -21,6 +21,7 @@ from django.core.mail import send_mail
 from django.http import HttpResponse
 from .models import User
 from django.contrib.auth.decorators import user_passes_test
+from django.views.generic import FormView
 
 
 def teacher_login(request):
@@ -48,59 +49,83 @@ def teacher_login(request):
     )
 
 
-def teacher_register(request):
-    if request.user.is_authenticated:
-        return redirect("home")
-    form = RegisterForm
-    if request.method == "POST":
-        form = RegisterForm(request.POST)
-        if form.is_valid():
-            user = form.save(commit=False)
-            user.email, user.username = user.email.lower(), user.username.lower()
-            user.is_active = False
-            if form.cleaned_data["User_role"] == "Teacher":
-                user.is_teacher = True
-            elif form.cleaned_data["User_role"] == "Student":
-                user.is_student = True
-                user.student_id = int(request.POST.get("student_id"))
-            current_site = get_current_site(request)
-            user.save()
-            try:
-                message = render_to_string(
-                    "studentBase/account_activation.html",
-                    {
-                        "domain": current_site,
-                        "token": token_generator.make_token(user),
-                        "uid": urlsafe_base64_encode(force_bytes(user.pk)),
-                        "user": user,
-                    },
-                )
-            except:
-                messages.error(
-                    "Something wrong with the email verification system. Please contact admin"
-                )
-                return redirect("register")
+def send_email_verification(request, user):
+    current_site = get_current_site(request)
+    message = render_to_string(
+        "studentBase/account_activation.html",
+        {
+            "domain": current_site,
+            "token": token_generator.make_token(user),
+            "uid": urlsafe_base64_encode(force_bytes(user.pk)),
+            "user": user,
+        },
+    )
+    subject = "Email verification for EduView account"
+    send_mail(
+        subject=subject,
+        recipient_list=[user.email],
+        message=message,
+        from_email=os.environ.get("FROM_EMAIL"),
+    )
 
-            client_email = request.POST.get("email")
-            send_mail(
-                subject="Verify your email for EduView",
-                recipient_list=[client_email],
-                message=message,
-                from_email=os.environ.get("FROM_EMAIL"),
-            )
+
+# class base register view
+
+
+class UserRegisterView(FormView):
+    template_name = "studentBase/register.html"
+    form_class = RegisterForm
+
+    def form_valid(self, form):
+        user = form.save(commit=False)
+        user.email, user.username = user.email.lower(), user.username.lower()
+        user.is_active = False
+        if form.cleaned_data["User_role"] == "Teacher":
+            user.is_teacher = True
+        elif form.cleaned_data["User_role"] == "Student":
+            user.is_student = True
+            student_id = int(self.request.POST.get("student_id"))
+            if Profile.objects.filter(Student_ID=student_id).exists():
+                user.student_id = student_id
+        user.save()
+        try:
+            send_email_verification(self.request, user)
             messages.success(
-                request, "An verification email has been sent to your email"
+                self.request, "An verification email has been sent to your email"
             )
+            return redirect("register")
+        except:
+            messages.error(
+                self.request,
+                "Something wrong with the email verification system. Please contact admin",
+            )
+            return redirect("register")
+        return super().form_valid(form)
 
-        elif User.objects.filter(
-            username=request.POST.get("username").lower()
-        ).exists():
-            messages.error(request, "Username taken. Please try a different username.")
+    def form_invalid(self, form):
+        username = self.request.POST.get("username").lower()
+
+        if (
+                User.objects.filter(username=username).exists()
+                and User.objects.get(username=username).is_email_verified == False
+        ):
+            user = User.objects.get(username=username)
+            send_email_verification(self.request, user)
+            messages.success(self.request, "Activation email sent to your email")
+            return super().form_invalid(form)
+
+        if User.objects.filter(username=username).exists():
+            messages.error(
+                self.request, "Username taken. Please try a different username."
+            )
         else:
-            messages.error(request, "An unknown error has occurred!")
+            messages.error(self.request, "An unknown error has occurred!")
+        return super().form_invalid(form)
 
-    context = {"form": form}
-    return render(request, "studentBase/register.html", context)
+    def get(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return redirect("home")
+        return super().get(self, request, *args, **kwargs)
 
 
 def activate(request, uid, token):
