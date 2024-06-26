@@ -1,7 +1,5 @@
 from django.urls import path
 from . import views
-from django.conf import settings
-from django.conf.urls.static import static
 
 urlpatterns = [
     path("", views.home, name="home"),
@@ -13,6 +11,6 @@ urlpatterns = [
     path("register/", views.UserRegisterView.as_view(), name="register"),
     path("activate/<str:uid>/<str:token>", views.activate, name="activate"),
     path("setting/", views.setting, name="setting"),
-    path("delete-teacher/", views.teacher_delete, name="delete_teacher"),
+    path("delete/", views.delete_user, name="delete_teacher"),
     path("approval/<str:pk_encoded>", views.teacher_approval, name="teacher_approval"),
 ]
