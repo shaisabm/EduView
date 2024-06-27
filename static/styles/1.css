@@ -1,0 +1,119 @@
+* {box-sizing:border-box; -webkit-tap-highlight-color:transparent; -webkit-text-size-adjust:none; -webkit-touch-callout:none;
+	-webkit-user-select:inherit; -moz-user-select:inherit; -ms-user-select:inherit; user-select:inherit;}
+.selectable, .textbox, .textboxp2, .textmenu, .textbox *, .textboxp2 *, .textmenu *, .selectable *, #text_find, #serverlog, #clientlog, .password, #help, textarea
+	{-webkit-user-select:text; -moz-user-select:text; -ms-user-select:text; user-select:text;}
+body, .unselectable, .unselectable *, .placeholder
+	{-webkit-user-select:none; -moz-user-select:none; -ms-user-select:none; user-select:none;}
+body, .password, .normaltext {font-family:Arial; font-size:12px; line-height:16px; color:black; font-weight:normal; font-style:normal; text-decoration:none;}
+body {margin:0px; cursor:default; white-space:nowrap; word-wrap:break-word; word-break:break-word;}
+.big, #pagetitle, #pagetitle2 {font-size:14px; font-weight:bold; line-height:18px;}
+.small {font-size:10px; font-weight:normal; line-height:13px;}
+.helptitle {font-size:16px; line-height:18px; font-family:Arial Black,Arial; font-weight:bold;}
+.code {font-family:Andale Mono,Monaco,Courier,Courier New; font-size:12px; white-space:pre; margin:0px; padding:0px;}
+.hyperlink:hover {text-decoration:underline}
+
+#tipbox, .jupbtns, .juplog, #offlinealert {z-index:10011}
+#findbox, #findpanel, .navlist, .topnav1list, .topnav2list {z-index:10009}
+#leftmast, .mininavbtns, #touchnav {z-index:10008}
+#bar1, #logoarea, #mininav, #topbar {z-index:10007}
+#findspace {z-index:10006}
+#bar2, #loginbar1, #loginlogobg, #rightnav, #podbar1, #podbar2, #zoompod {z-index:10005}
+#help, .podpanel {z-index:10004}
+#sidebararea, #tsidebararea, #palette {z-index:10003}
+#submast, .zbuttons {z-index:10002}
+.floatbox {z-index:10001}
+.menuopenspace, .menualistspace, .menualist, .calbox, .ztop {z-index:10000}
+
+#tipbox {max-width:300px; white-space:normal;}
+
+.darkbox   {display:table; border-radius:12px; padding:12px 20px;}
+.whitebox, .whitecell, .page {border-radius:12px; padding:4px 0px 12px 0px; background-color:white;}
+.whitebox {display:table}
+.whitetop {border-radius:12px 12px 0px 0px; padding-top:12px;}
+.whitebot {border-radius:0px 0px 12px 12px; padding-bottom:12px;}
+.white, .whitetop, .whitebot, .whi:hover, .wlit {background-color:white;}
+.redbox   {display:table; border-radius:12px; padding:12px 20px; background-color:hsl(0,100%,50%); color:white;}
+#tipbox   {position:fixed; border-radius:10px; padding:4px 8px;}
+.alert {padding:4px 12px; border-radius:5px; white-space:normal;}
+
+#bar1, #loginbar1 {position:fixed; top:0px; left:0px; width:100%; height:32px;}
+#mininav          {position:fixed; top:0px; left:0px; width:100%; transition:top 0.2s ease;}
+	.minibar       {height:30px}
+#bar2             {position:fixed; top:32px; left:0px; width:100%; height:28px;}
+#logoarea         {position:fixed; top:0px; left:0px; width:70px; height:60px; overflow:hidden;}
+	#logo, #touchnavbtn {position:absolute; top:8px; left:12px; width:46px; height:46px;}
+	.logotext      {background-color:white; border-radius:99px; overflow:hidden; text-align:center; font-weight:bold; line-height:100%; letter-spacing:-1px;}
+	#logobg1       {position:absolute; top:0px; left:0px; width:35px; height:60px;}
+	#logobg2       {position:absolute; top:-4px; left:0px; height:70px; width:70px; border-radius:35px;}
+#loginlogobg      {position:fixed; top:0px; left:0px; width:204px; height:46px; border-radius:0px 23px 23px 0px; padding:5px 0px 0px 18px;}
+#leftmast         {position:fixed; top:0px; left:66px;}  /* left changed by js for teacher mode */
+	#toptab1space  {position:absolute; top:6px; left:9px;}
+	#toptab2space  {position:absolute; top:35px; left:9px;}
+	.toptab1, .toptab1hi, .toptab2, .toptab2hi, .toptabnull
+	               {display:inline-block; font-size:14px; line-height:18px; font-weight:bold; padding:2px 7px 2px 11px; border-radius:10px;}
+	#leftnav       {position:absolute; top:32px; left:10px;}
+#rightnav         {position:fixed; top:32px; right:10px;}
+#findbox          {position:fixed; top:6px; right:12px; border-radius:99px; border-width:1px; border-style:solid;}
+	#ph_find       {padding:2px 6px; height:20px; width:96px; text-align:center; color:white;}
+	#text_find     {position:relative; padding:2px 8px; height:20px; max-width:200px; overflow:hidden; cursor:text; outline:none;}
+		.find0      {min-width:96px}
+		.find1      {min-width:86px}
+	#findsvg       {margin:6px 8px 0px 4px}
+	#showclearfind {vertical-align:-4px;}
+#findhotspot      {position:fixed; top:0px; right:0px; width:35px; height:32px;}
+#findpanel        {position:fixed; top:32px; right:0px; padding:0px 12px 12px 20px; border-bottom-left-radius:12px; text-align:right;}
+#findspace        {position:fixed; top:0px; right:0px; height:100%; overflow-y:auto; overflow-x:hidden; padding-bottom:20px;}
+#findlist         {border-bottom-left-radius:12px; padding-bottom:12px;}
+#foundmultistuds  {display:inline-block; min-width:16px; margin:2px 2px 0px 0px; text-align:center; background-color:white; color:black; border-radius:99px;}
+#submast          {position:fixed; top:60px; left:0px; width:100%; height:45px;}
+	#pagetitle, #pagetitle2 {position:absolute; top:10px; left:20px;}  /* left changed by js for teacher mode */
+	#pagebuttons   {position:absolute; top:10px; right:0px; padding:0px 20px 0px 6px;}
+#sidebararea      {position:fixed; left:0px; top:70px;}
+	#sidebar       {padding:10px 0px; border-radius:0px 12px 12px 0px; overflow:hidden;}
+		.classtab, .classlit, .classsemi  {font-size:14px; line-height:18px; font-weight:bold; padding:5px 16px;}
+		.comboicon   {display:inline-block; padding:1px 8px; margin:-1px -8px; border-radius:99px;}
+	#classcurvearea {position:absolute; z-index:-1; top:0px; right:-6px; width:20px; height:28px; overflow:hidden;}
+		#classcurve  {position:absolute; top:-6px; left:-20px; height:40px; width:40px; border-radius:99px;}
+#mainpage         {z-index:0; position:absolute; padding:105px 20px 20px 20px;}  /* padding changed by js; position needed for right/bottom padding */
+#offlinealert     {position:fixed; background-color:hsl(60,100%,85%); color:black;}
+.offlinealertclosed {right:-280px;}
+.offlinealertopen {right:0px;}
+
+.tabarea  {position:relative; display:inline-block; padding-top:3px; height:28px; text-align:center; vertical-align:top;}
+	.tab, .tabdim {padding:3px 10px; border-radius:11px;}
+	.tabcurvearea {display:inline-block; position:relative; top:-3px; width:30px; height:6px; overflow:hidden;}
+		.tabcurve  {position:absolute; top:-34px; left:-5px; height:40px; width:40px; border-radius:20px;}
+.navtab, .navtabdim  {padding:3px 10px; border-radius:8px 8px 0px 0px;}
+.navlist    {position:absolute; text-align:left; overflow-y:auto; overflow-x:hidden; top:25px; left:0px; padding:12px 0px 12px 0px; border-radius:0px 11px 11px 11px;}
+.topnav1list, .topnav2list {position:absolute; text-align:left; overflow-y:auto; overflow-x:hidden; left:1px; padding:6px 0px 12px 0px; border-radius:0px 0px 11px 11px;}
+.topnav1list {top:26px}
+.topnav2list {top:25px}
+.navrow, .navlit, .navdim {padding:2px 10px}
+#sidebar .navrow, #sidebar .navlit, #sidebar .navdim {padding:2px 12px 2px 16px}
+.menugap  {height:12px}
+.classnav {max-width:140px; overflow:hidden; text-overflow:ellipsis;}
+
+#touchnav {position:fixed; right:0px; top:31px; width:42px; height:30px;}
+#minileftnav {position:absolute; left:8px;}
+#minirightnav {position:absolute; right:0px; padding-right:30px;}
+.minitabarea {display:inline-block; padding:4px 0px;}
+.minitab {padding:3px 8px; border-radius:11px; margin:0px -2px;}
+#minitabright {margin-right:26px}
+.landonly {}  /* apply to phone only */
+.portonly {display:none}
+.alandonly {}  /* apply to tablet or phone */
+.aportonly {display:none}
+#touchmenulit {position:absolute; top:3px; right:3px; width:24px; height:24px; border-radius:12px; padding:5px;}
+#minisubmast, #minisubhelp {position:absolute; top:30px; height:40px; width:100%; padding:6px 6px 0px 6px;}
+.mininavblock {display:block !important; padding:10px 0px !important; width:100%; overflow:hidden; margin-top:6px;}
+.mininavexpand {display:block; padding:0px; width:100%; overflow:hidden; margin-top:6px; position:relative;}
+.mininavwidget {position:absolute; top:0px; right:0px; width:21px; height:30px;}
+#minihelp {position:absolute; top:0px; left:0px; width:100%; min-height:100%; background-color:white;}
+#minisubhelp {width:100%; background:linear-gradient(to top, hsla(0,0%,100%,0) 0px, hsla(0,0%,100%,1) 10px);}
+
+.btn, .dimbtn, .btntran, .btntranlit  {display:inline-block; padding:4px 10px; line-height:16px; text-align:center; height:24px; border-radius:12px;}
+.glowbtn {animation: glowbtn 1.5s ease-out infinite}
+
+.btnl, .btnllit, .dimbtnl, .nullbtnl {display:inline-block; padding:2px 10px; border-radius:99px;}
+
+

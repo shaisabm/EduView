@@ -18,7 +18,7 @@ from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.core.mail import send_mail
 from django.http import HttpResponse
-from .models import User
+from .models import User, Message
 from django.contrib.auth.decorators import user_passes_test
 from django.views.generic import FormView
 
@@ -114,8 +114,8 @@ class UserRegisterView(FormView):
         username = self.request.POST.get("username").lower()
 
         if (
-            User.objects.filter(username=username).exists()
-            and User.objects.get(username=username).is_email_verified == False
+                User.objects.filter(username=username).exists()
+                and User.objects.get(username=username).is_email_verified == False
         ):
             user = User.objects.get(username=username)
             send_email_verification(self.request, user)
@@ -137,7 +137,6 @@ class UserRegisterView(FormView):
 
 
 def activate(request, uid, token):
-
     try:
         pk = force_str(urlsafe_base64_decode(uid))
         user = User.objects.get(pk=pk)
@@ -214,7 +213,7 @@ def teacher_approval(request, pk_encoded):
             send_mail(
                 subject="Admin did not approved your EduView account!",
                 message=f"Sorry to inform you that the admin declined your account. "
-                f"Please contact admin at {admin_email} for more information.",
+                        f"Please contact admin at {admin_email} for more information.",
                 from_email=admin_email,
                 recipient_list=[user.email],
             )
@@ -389,3 +388,16 @@ def delete_user(request):
         user.delete()
         return redirect("login")
     return render(request, "studentBase/delete.html", {"user": user})
+
+
+def message_field(request):
+    user_messages = Message.objects.filter(recipient = request.user)
+
+    context = {'user_messages': user_messages}
+    return render(request, 'studentBase/message_component.html', context)
+
+
+def single_message(request, pk):
+    message = Message.objects.get(pk=pk)
+
+    return HttpResponse(message.body)

@@ -37,4 +37,21 @@ class User(AbstractUser):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.first_name} {self.last_name} teacher:{self.is_teacher}".strip()
+        return f"{self.first_name} {self.last_name}".strip()
+
+
+class Message(models.Model):
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='sent_message',null=True)
+    recipient = models.ForeignKey(User, on_delete=models.SET_NULL,related_name='received_message',null=True)
+    reply_to = models.ForeignKey('self', on_delete=models.SET_NULL, related_name='replay_to', null=True,blank=True)
+    subject = models.CharField(max_length=50,null=True, blank=True)
+    body = models.TextField()
+    create_on = models.DateTimeField(auto_now=True)
+
+
+    class Meta:
+        ordering =['-create_on']
+
+    def __str__(self):
+        return f'from{self.user} to {self.recipient}: message {self.body[0:20]}'
+

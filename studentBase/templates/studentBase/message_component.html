@@ -1,0 +1,58 @@
+{% extends 'main.html' %}
+{% load static %}
+
+{% block contain %}
+
+<html lang="en"><script src="chrome-extension://eppiocemhmnlbhjplcgkofciiegomcon/content/location/location.js" id="eppiocemhmnlbhjplcgkofciiegomcon"></script><script src="chrome-extension://eppiocemhmnlbhjplcgkofciiegomcon/libs/extend-native-history-api.js"></script><script src="chrome-extension://eppiocemhmnlbhjplcgkofciiegomcon/libs/requests.js"></script><head>
+<meta charset="UTF-8">
+<title>Message</title>    
+
+<link href="{% static 'styles/1.css' %}" rel="stylesheet">
+<script>
+touch=1;
+mini=0;
+platform='Mac';
+browser='Chrome';
+autologin=0;
+</script>
+<script src="{% static 'js/1.js' %}"></script>
+
+
+
+<style>
+.block {display:block; padding:5px 0px; margin-top:8px; max-width:728px;}
+.post  {position:relative}
+.photo {position:absolute; box-sizing:content-box; transition: width 0.2s ease, height 0.2s ease;}
+.photoclosed {width:45px; height:45px; left:12px; top:3px; border-radius:5px;}
+.clickspace {margin:0px 32px 0px 66px; padding:3px 0px; line-height:15px; white-space:normal;}
+.date {float:right; padding:0px 8px 0px 10px; opacity:0.25; color: #0f0f0f}
+</style>
+</head>
+
+<body __processed_d1e51fa5-792f-4560-9e09-d426fbbf60dc__="true">
+    {% for message in user_messages %}
+	<div class="block whitebox" onclick="redirectToMessage('{% url 'single_message' message.pk %}')">
+		<!--POST 100401611-->
+		<div class="post accordion">
+			<img border="0" src="{{ message.user.profile_pic.url }}" class="photo photoclosed"  alt="">
+			<div class="clickspace" >
+					<div class="date medium" >{{ message.create_on | timesince}}
+                    </div>
+					<b>{{ message.user }}</b><br>
+					Subject: {{ message.subject }}<br>{{ message.body }}
+			</div>
+		</div>
+	</div>
+    {% endfor %}
+
+<script>
+
+function redirectToMessage(pk){
+    window.location.href = pk;
+}
+</script>
+
+</body>
+</html>
+
+{% endblock contain %}
