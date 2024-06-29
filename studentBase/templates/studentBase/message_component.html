@@ -20,12 +20,43 @@ autologin=0;
 
 
 <style>
-.block {display:block; padding:5px 0px; margin-top:8px; max-width:728px;}
-.post  {position:relative}
-.photo {position:absolute; box-sizing:content-box; transition: width 0.2s ease, height 0.2s ease;}
-.photoclosed {width:45px; height:45px; left:12px; top:3px; border-radius:5px;}
-.clickspace {margin:0px 32px 0px 66px; padding:3px 0px; line-height:15px; white-space:normal;}
-.date {float:right; padding:0px 8px 0px 10px; opacity:0.25; color: #0f0f0f}
+.block {
+    display:block; 
+    padding:5px 0px; 
+    margin-top:8px; 
+    max-width:728px;
+}
+.post  {
+    position:relative
+}
+.photo {
+    position:absolute; 
+    box-sizing:content-box; 
+    transition: width 0.2s ease, height 0.2s ease;
+}
+
+.photoclosed {
+    width:45px; 
+    height:45px; 
+    left:12px; 
+    top:3px; 
+    border-radius:5px;}
+
+.clickspace {
+    margin:0px 32px 0px 66px; 
+    padding:3px 0px; 
+    line-height:15px; 
+    white-space:normal;}
+
+.date {
+    float:right; 
+    padding:0px 8px 0px 10px; 
+    opacity:0.25; color: #0f0f0f}
+
+
+.whitebox:hover {
+    background-color: #4fcefa;
+}
 </style>
 </head>
 
@@ -43,10 +74,11 @@ autologin=0;
 			</div>
 		</div>
 	</div>
+        
+        
     {% endfor %}
 
 <script>
-
 function redirectToMessage(pk){
     window.location.href = pk;
 }

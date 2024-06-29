@@ -400,4 +400,11 @@ def message_field(request):
 def single_message(request, pk):
     message = Message.objects.get(pk=pk)
 
-    return HttpResponse(message.body)
+    if request.method == 'POST':
+        user = request.user
+        recipient = message.user
+        body = request.POST.get('body')
+        Message.objects.create(user = user, recipient = recipient, body=body)
+
+    context = {'message':message}
+    return render(request,'studentBase/single_message.html',context)
