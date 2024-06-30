@@ -24,8 +24,11 @@ from django.views.generic import FormView
 
 
 def user_login(request):
-    if request.user.is_authenticated:
+    if request.user.is_authenticated and request.user.is_teacher:
         return redirect("home")
+    elif request.user.is_authenticated and request.user.is_student:
+        return redirect('message_field')
+
     if request.method == "POST":
         username = request.POST.get("username").lower()
         password = request.POST.get("password")
@@ -38,7 +41,9 @@ def user_login(request):
             if user is not None:
                 user = authenticate(request, username=username, password=password)
                 login(request, user)
-                return redirect("home")
+                if user.is_teacher:
+                    return redirect("home")
+                else: return redirect('message_field')
 
             else:
                 messages.error(request, "Incorrect password")
