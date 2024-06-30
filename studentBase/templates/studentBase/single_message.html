@@ -55,11 +55,22 @@
 					<b>{{ message.user }}</b><br>
 					Subject: {{ message.subject }}<br>{{ message.body }}
 			</div>
+
+          {% for reply in replies %}
+         <div class="clickspace" >
+					<div class="date medium" style="color: darkblue">{{ reply.create_on | timesince}}
+                    </div>
+					<b>{{ reply.user }}: </b>{{ reply.body }}<br>
+
+			</div>
+          {% endfor %}
+
       </div>
       <div id="insert1"></div>
    </div>
     <br>
     <br>
+
     <form method="POST">
         {% csrf_token %}
    <div class="post">

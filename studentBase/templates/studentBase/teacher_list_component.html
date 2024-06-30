@@ -1,0 +1,39 @@
+<style>
+    .avatar-iframe {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+    }
+
+    .activities {
+        margin-left: 750px; /* Add this line */
+    }
+    
+    .activities__box {
+  margin: 1.5rem;
+  padding: 1.5rem;
+  border: 1px solid var(--color-dark-medium);
+  border-radius: 30px;
+}
+    
+</style>
+<div class="activities">
+  <div class="activities__header">
+    <h2>Teacher lists</h2>
+  </div>
+  {% for teacher in teachers %}
+  <div class="activities__box">
+    <div class="activities__boxHeader roomListRoom__header">
+      <a href="#" class="roomListRoom__author">
+        <div class="avatar avatar--small">
+                <img src="{{ teacher.profile_pic.url }}" alt="" class="avatar-iframe">
+        </div>
+      {{ teacher }}
+        <p style="color: #e1f6fb">
+        </p>
+      </a>
+    </div>
+
+  </div>
+  {% endfor %}
+</div>

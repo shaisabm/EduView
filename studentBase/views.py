@@ -240,7 +240,7 @@ def teacher(user):
 
 
 @login_required(login_url="login")
-# @user_passes_test(teacher,login_url='#') set a redirect url to student dashboard
+@user_passes_test(teacher,login_url='login')
 def home(request):
     student_search = request.GET.get("Student_ID")
     if student_search is None:
@@ -276,6 +276,8 @@ def home(request):
 
 
 @login_required(login_url="login")
+@user_passes_test(teacher,login_url='#')
+
 def profile(request, id):
     user = request.user
     if user.is_student and user.student_id != id:
@@ -336,7 +338,6 @@ def update_profile(request, id):
 
 
 @login_required(login_url="login")
-@user_passes_test(teacher, login_url="#")
 def delete_student(request, id):
     _, worksheet = get_all_students(SHEET_NAME)
     student = Profile.objects.get(Student_ID=id)
@@ -397,8 +398,8 @@ def delete_user(request):
 
 def message_field(request):
     user_messages = Message.objects.filter(recipient = request.user)
-
-    context = {'user_messages': user_messages}
+    teachers = User.objects.filter(is_teacher=True)
+    context = {'user_messages': user_messages,'teachers':teachers}
     return render(request, 'studentBase/message_component.html', context)
 
 
@@ -409,7 +410,7 @@ def single_message(request, pk):
         user = request.user
         recipient = message.user
         body = request.POST.get('body')
-        Message.objects.create(user = user, recipient = recipient, body=body)
-
-    context = {'message':message}
+        Message.objects.create(user = user, recipient = recipient, body=body, reply_to=message)
+    replies = Message.objects.filter(reply_to=message).reverse()
+    context = {'message':message, 'replies':replies}
     return render(request,'studentBase/single_message.html',context)
