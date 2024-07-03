@@ -13,6 +13,5 @@ urlpatterns = [
     path("setting/", views.setting, name="setting"),
     path("delete/", views.delete_user, name="delete_teacher"),
     path("approval/<str:pk_encoded>", views.teacher_approval, name="teacher_approval"),
-    path('messages/',views.message_field, name='message_field'),
-    path('message/<int:pk>', views.single_message,name='single_message')
+    path('chat/',views.chat, name='chat_box'),
 ]

@@ -43,7 +43,8 @@ def user_login(request):
                 login(request, user)
                 if user.is_teacher:
                     return redirect("home")
-                else: return redirect('message_field')
+                else:
+                    return redirect('message_field')
 
             else:
                 messages.error(request, "Incorrect password")
@@ -240,7 +241,7 @@ def teacher(user):
 
 
 @login_required(login_url="login")
-@user_passes_test(teacher,login_url='login')
+@user_passes_test(teacher, login_url='login')
 def home(request):
     student_search = request.GET.get("Student_ID")
     if student_search is None:
@@ -276,8 +277,7 @@ def home(request):
 
 
 @login_required(login_url="login")
-@user_passes_test(teacher,login_url='#')
-
+@user_passes_test(teacher, login_url='#')
 def profile(request, id):
     user = request.user
     if user.is_student and user.student_id != id:
@@ -396,21 +396,16 @@ def delete_user(request):
     return render(request, "studentBase/delete.html", {"user": user})
 
 
-def message_field(request):
-    user_messages = Message.objects.filter(recipient = request.user)
+def chat(request):
+    user = request.user
+    my_messages = Message.objects.filter(recipient=user)
+    print(my_messages)
     teachers = User.objects.filter(is_teacher=True)
-    context = {'user_messages': user_messages,'teachers':teachers}
-    return render(request, 'studentBase/message_component.html', context)
+    context = {'my_messages': my_messages, 'teachers': teachers}
+    return render(request, 'studentBase/chat_box.html', context)
 
 
-def single_message(request, pk):
-    message = Message.objects.get(pk=pk)
-
-    if request.method == 'POST':
-        user = request.user
-        recipient = message.user
-        body = request.POST.get('body')
-        Message.objects.create(user = user, recipient = recipient, body=body, reply_to=message)
-    replies = Message.objects.filter(reply_to=message).reverse()
-    context = {'message':message, 'replies':replies}
-    return render(request,'studentBase/single_message.html',context)
+def single_chat(request, pk):
+    recipient = User.objects.get(pk=pk)
+    user = request.user
+    users_messages = Message.objects.filter(user)
