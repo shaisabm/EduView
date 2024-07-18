@@ -354,7 +354,7 @@ def delete_student(request, id):
     return render(request, "studentBase/delete.html", context)
 
 
-def setting(request):
+def settings(request):
     user = request.user
     form = UpdateUserForm(instance=user)
 
