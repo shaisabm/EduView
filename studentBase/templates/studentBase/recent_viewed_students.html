@@ -1,45 +1,78 @@
-<style>
-    .avatar-iframe {
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-    }
 
-    .activities {
-        margin-left: 1px; /* Add this line */
-    }
-    
-    .activities__box {
-  margin: 1.5rem;
-  padding: 1.5rem;
-  border: 1px solid var(--color-dark-medium);
-  border-radius: 30px;
+
+<style>
+.recent-viewed-students-container{
+    display: flex;
+    flex-direction: column;
+    min-width: 170px;
 }
-    
+
+.recent-viewed-title {
+    font-family: sans-serif;
+    font-size: 0.9em;
+    font-weight: 600;
+    color: white;
+    background-color: rgb(52, 58, 64);
+    padding-top: 20px;
+    padding-bottom: 20px;
+    padding-right: 8px;
+    padding-left: 8px;
+    margin-bottom: 1px;
+
+}
+.student-viewed {
+    display: flex;
+    align-items: center ;
+    height: 60px;
+    width: 170px;
+    border-radius: 15px;
+    padding-left: 5px;
+    margin-bottom: 1px;
+    background-color: rgb(54, 53, 53);
+
+}
+.avatar-iframe {
+    height: 45px;
+    width: 45px;
+    border-radius: 50%;
+    border-width: 1px;
+    border-color: gray;
+}
+
+.student-info {
+    font-family: sans-serif;
+    display: flex;
+    flex-direction: column;
+    margin-left: 8px;
+    color: white;
+}
+.student-id {
+    color: rgb(2, 199, 255);
+}
+
+
 </style>
-<div class="activities">
-  <div class="activities__header">
-    <h2>Recent Viewed Profile</h2>
-  </div>
-  {% for profile in viewed_profiles %}
-  <div class="activities__box">
-    <div class="activities__boxHeader roomListRoom__header">
-      <a href="{% url 'profile' profile.Student_ID %}" class="roomListRoom__author">
-        <div class="avatar avatar--small">
-            {% if profile.Photo != '' %}
-                <iframe src="{{ profile.Photo }}" class="avatar-iframe"></iframe>
-            {% else %}
-                <img src="/media/default-avatar.jpg" alt="">
-            {% endif %}
-        
-        </div>
-        <p style="color: #e1f6fb">
-          {{ profile}}
-            <span style='color: #4ac1f7'>{{profile.Student_ID}}</span>
-        </p>
-      </a>
-    </div>
-  
-  </div>
-  {% endfor %}
+<div class="recent-viewed-students-container">
+    <div class="recent-viewed-title">Recent Viewed</div>
+        {% for profile in viewed_profiles %}
+            <a style="text-decoration: none" href="{% url 'profile' profile.Student_ID %}">
+                <div class="student-viewed">
+                    {% if profile.Photo != '' %}
+                        <iframe src="{{ profile.Photo }}" class="avatar-iframe"></iframe>
+                    {% else %}
+                        <img class="avatar-iframe" src="/media/default-avatar.jpg" alt="">
+                    {% endif %}
+{#
+                    <div class="student-info">
+                        <span>{{ profile }}</span>
+                        <span class="student-id">{{profile.Student_ID}}</span>
+                    </div>
+
+                </div>
+            </a>
+
+        {% endfor %}
+
 </div>
+
+</script>

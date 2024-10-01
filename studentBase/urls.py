@@ -14,4 +14,6 @@ urlpatterns = [
     path("delete/", views.delete_user, name="delete_teacher"),
     path("approval/<str:pk_encoded>", views.teacher_approval, name="teacher_approval"),
     path('chat/',views.chat, name='chat_box'),
+    path('get_recent_viewed_profiles/', views.get_recent_viewed_profiles, name='get_recent_viewed_profiles'),
+
 ]

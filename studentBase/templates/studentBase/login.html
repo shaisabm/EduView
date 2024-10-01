@@ -2,89 +2,156 @@
 
 
 {% block contain %}
-<style>
-    .btn--secondary {
-    background-color: #686c67;
-    color: #ffffff;
-    border: 1px solid #696c69;
-    padding: 10px 20px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    margin: 4px 2px;
-    transition-duration: 0.4s;
-    cursor: pointer;
-}
 
-.btn--secondary:hover {
-    background-color: rgb(228, 228, 228);
-    color: #070404;
-}
-</style>        
-    <main class="auth layout" style="background-color: black; color: white;">
-      <div class="container">
-        <div class="layout__box">
-          <div class="layout__boxHeader">
-            <div class="layout__boxTitle">
-              <h3>Login</h3>
-            </div>
-          </div>
-          <div class="layout__body">
+    <style>
+        .login-field-flex {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            padding-top: 50px;
+        }
 
-            <form class="form" action="" method="POST">
-                {% csrf_token %}
+        .login-box {
+            background-color: white;
+            height: 300px;
+            width: 300px;
+            border-radius: 20px;
+            box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding-bottom: 30px;
 
-              <div class="form__group form__group">
-                <label for="room_name">Username</label>
-                <input id="username" name="username" type="text" placeholder="e.g. dennis_ivy" />
-              </div>
-              <div class="form__group">
-                <label for="password">Password</label>
-                <input id="password" name="password" type="password"
-                  placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;"
-                />
-              </div>
+        }
+
+        .username-container {
+            border-radius: 10px;
+            font-family: Arial, serif;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.4);
+            padding-left: 8px;
+            padding-bottom: 10px;
+            padding-right: 5px;
+            margin-bottom: 10px;
+
+        }
+
+        .username {
+            margin-top: 10px;
+            margin-bottom: 5px;
+        }
+
+        .username-input {
+            padding: 5px 10px;
+            border: none;
+
+        }
+
+
+        .password {
+            display: block;
+            margin-top: 10px;
+            margin-bottom: 5px;
+        }
+
+        .login-button {
+            font-family: Arial, serif;
+            background-color: #07e1ff;
+            border: none;
+            border-radius: 7px;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+
+        .errors {
+            font-family: Arial, serif;
+        }
+
+        .sign-up-field {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .signup-button {
+            background-color: #3cf53c;
+        }
+
+        .login-text {
+            font-family: Arial, serif;
+            font-weight: bold;
+        }
+
+        .errors {
+            margin: 5px;
+
+        }
+        .demo-button {
+            background-color: #ffcd00;
+        }
+
+
+
+    </style>
+
+    <form class="form" action="" method="POST">
+        {% csrf_token %}
+        <div class="login-field-flex">
+            <div class="login-box">
+                <p class="login-text">Login</p>
+                <div class="username-container">
+                    <p class="username">Username</p>
+                    <input class="username-input" id="username" name="username" type="text"
+                           placeholder="e.g. dennis_ivy"/>
+                    <p class="password" for="password">Password</p>
+                    <input class="username-input" id="password" name="password" type="password"
+                           placeholder="&bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;"
+                    />
+                </div>
+
                 {% if messages %}
-                    <ul>
-                    <li>
-                        {% for message in messages %}
-                            {{ message }}
-                        {% endfor %}
-                    </li>
+                    <ul class="errors">
+                        <li>
+                            {% for message in messages %}
+                                {{ message }}
+                            {% endfor %}
+                        </li>
                     </ul>
-                    
                 {% endif %}
-              <button class="btn btn--main" type="submit">
-                <svg
-                  version="1.1"
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="32"
-                  height="32"
-                  viewBox="0 0 32 32">
-                  <title>lock</title>
-                  <path
-                    d="M27 12h-1v-2c0-5.514-4.486-10-10-10s-10 4.486-10 10v2h-1c-0.553 0-1 0.447-1 1v18c0 0.553 0.447 1 1 1h22c0.553 0 1-0.447 1-1v-18c0-0.553-0.447-1-1-1zM8 10c0-4.411 3.589-8 8-8s8 3.589 8 8v2h-16v-2zM26 30h-20v-16h20v16z"
-                  ></path>
-                  <path
-                    d="M15 21.694v4.306h2v-4.306c0.587-0.348 1-0.961 1-1.694 0-1.105-0.895-2-2-2s-2 0.895-2 2c0 0.732 0.413 1.345 1 1.694z"
-                  ></path>
-                </svg>
-                Login
-              </button>
-            
-            <div style="display: flex; flex-direction: column; align-items: center; margin-top: 20px; font-size: small">
-                <p>Doesn't have a account yet?</p>
-                <button style="font-size: small" class="btn btn--secondary" onclick="location.href='{% url 'register' %}'" type="button">
-                    Sign up
-                </button>
+
+                <button class="login-button" type="submit">Login</button>
+
+                <div class="sign-up-field">
+                    <p>Doesn't have a account yet?</p>
+                    <div>
+
+                        <button class="login-button signup-button" onclick="location.href='{% url 'register' %}'"
+                                type="button">
+                            Sign up
+                        </button>
+                        <button class="login-button signup-button demo-button" onclick="demoLogin()">Demo as a Teacher</button>
+                    </div>
+                </div>
+
+            </div>
+
+
         </div>
-                
-            
-            </form>
-              
-          </div>
-        </div>
-      </div>
-    </main>
+    </form>
+
+
+
+<script>
+    function demoLogin() {
+        document.querySelector('.username-input').value = 'demo340'
+        document.getElementById('password').value = 'password340'
+        document.querySelector('.demo-button').click()
+
+
+    }
+</script>
+
+
 {% endblock contain %}
+

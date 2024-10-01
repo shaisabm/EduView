@@ -1,4 +1,6 @@
 import os
+from dotenv import load_dotenv
+load_dotenv()
 from .google_services.services import get_all_ids, get_all_students
 from .google_services.update_gsheet import row_range
 from django.db.models import Q
@@ -17,10 +19,10 @@ from .tokens import token_generator
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.core.mail import send_mail
-from django.http import HttpResponse
 from .models import User, Message
 from django.contrib.auth.decorators import user_passes_test
 from django.views.generic import FormView
+from django.http import JsonResponse
 
 
 def user_login(request):
@@ -40,6 +42,7 @@ def user_login(request):
         if user is not None and user.is_active and user.is_email_verified:
             if user is not None:
                 user = authenticate(request, username=username, password=password)
+                print(user)
                 login(request, user)
                 if user.is_teacher:
                     return redirect("home")
@@ -56,10 +59,9 @@ def user_login(request):
         else:
             messages.error(request, "User not found.")
             return redirect("login")
-
     return render(
         request,
-        "studentBase/login.html",
+        "studentBase/login.html", {'DEMO_PASSWORD':os.getenv('DEMO_PASSWORD')}
     )
 
 
@@ -254,13 +256,14 @@ def home(request):
         | Q(Student_ID__icontains=student_search)
         | Q(Last_Name__icontains=student_search)
         | Q(Middle_Name__icontains=student_search)
-    )
-    viewed_profiles_list = request.session.get("viewed_profiles", [])
-    viewed_profiles = Profile.objects.filter(Student_ID__in=viewed_profiles_list)
-    viewed_profiles = sorted(
-        viewed_profiles,
-        key=lambda profile: viewed_profiles_list.index(profile.Student_ID),
-    )
+     )
+    # viewed_profiles_list = request.session.get("viewed_profiles", [])
+    # viewed_profiles = Profile.objects.filter(Student_ID__in=viewed_profiles_list)
+    # viewed_profiles = sorted(
+    #     viewed_profiles,
+    #     key=lambda profile: viewed_profiles_list.index(profile.Student_ID),
+    # )
+
     if request.user.is_student:
         user = request.user
         student_id = user.student_id
@@ -272,9 +275,32 @@ def home(request):
             )
             return render(request, "studentBase/messages.html")
 
-    context = {"students": students, "viewed_profiles": viewed_profiles}
+    #context = {"students": students, "viewed_profiles": viewed_profiles}
+    context = {"students": students}
+
     return render(request, "studentBase/home.html", context)
 
+
+
+@login_required(login_url="login")
+def get_recent_viewed_profiles(request):
+    viewed_profiles_list = request.session.get("viewed_profiles", [])
+    viewed_profiles = Profile.objects.filter(Student_ID__in=viewed_profiles_list)
+    viewed_profiles = sorted(
+        viewed_profiles,
+        key=lambda profile: viewed_profiles_list.index(profile.Student_ID),
+    )
+    profiles_data = [
+        {
+            "Student_ID": profile.Student_ID,
+            "First_Name": profile.First_Name,
+            "Photo": profile.Photo if profile.Photo !='' else "/media/default-avatar.jpg"
+        }
+        for profile in viewed_profiles
+     ]
+    # for pro in viewed_profiles:
+    #     print(pro.Photo == '')
+    return JsonResponse({"viewed_profiles": profiles_data})
 
 @login_required(login_url="login")
 @user_passes_test(teacher, login_url='#')
@@ -326,13 +352,12 @@ def update_profile(request, id):
             gsheet_range = row_range(row)
             new_data = data_org(form)
             worksheet.update(gsheet_range, [new_data])
-
             return redirect(
                 "home",
             )
 
     student = Profile.objects.get(Student_ID=id)
-    form = UpdateForm(instance=student)
+    form = UpdateForm(instance=student, req=request)
     context = {"form": form, "student": student}
     return render(request, "studentBase/student_profile_update.html", context)
 
@@ -342,6 +367,8 @@ def delete_student(request, id):
     _, worksheet = get_all_students(SHEET_NAME)
     student = Profile.objects.get(Student_ID=id)
     if request.method == "POST":
+        student.delete()
+        student.save()
         student_records = worksheet.get_all_records()
         for s in range(len(student_records)):
             Student_ID = student_records[s]["Student_ID"]

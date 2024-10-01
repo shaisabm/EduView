@@ -1,26 +1,78 @@
 {% extends 'main.html' %}
 
 {% block contain %}
-    <main class="auth layout" style="background-color: black; color: white;">
 
-      <div class="container">
-        <div class="layout__box">
-          <div class="layout__boxHeader">
-            <div class="layout__boxTitle">
-              <h3>Register</h3>
-            </div>
-          </div>
-          <div class="layout__body">
+    <style>
+        .register-field-flex {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            padding-top: 50px;
 
+        }
+
+        .register-box {
+            background-color: white;
+            height: 500px;
+            width: 300px;
+            border-radius: 20px;
+            box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding-right: 20px;
+            padding-left: 20px;
+
+        }
+
+        .register-labels {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            font-family: Arial, serif;
+            margin-bottom: 20px;
+        }
+
+        .register-text {
+            font-family: Arial, serif;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .register-button-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .register-button {
+            background-color: #19e05f;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            padding: 4px 7px;
+            cursor: pointer;
+        }
+
+        .login-button {
+            background-color: #00d0ff;
+        }
+
+    </style>
+
+    <div class="register-field-flex">
+        <div class="register-box">
+            <p class="register-text">Register</p>
             <form class="form" action="" method="POST">
                 {% csrf_token %}
                 {% for field in form %}
-              <div class="form__group form__group">
-                <label for="room_name">{{ field.label }}</label>
-                    {{ field }}
-              </div>
+                    <div class="register-labels">
+                        <label for="room_name">{{ field.label }}:</label>
+                        {{ field }}
+                    </div>
                 {% endfor %}
-              
+
                 {% if messages %}
                     <ul>
                         <li>
@@ -30,57 +82,60 @@
                         </li>
                     </ul>
                 {% endif %}
-                
-                {% if form.email.errors %}
-                {% for error in form.email.errors %}
-                    {{ error }}
-                {% endfor %}
-            {% endif %}
-{#            #}
-             <div id="studentIdField" class="form__group form__group" style="display: none;">
-                <label for="id_student_id">Student ID</label>
-                <input type="number" id="student_id" name="student_id">
-            </div>
-                    
-              <button class="btn btn--main" type="submit">
-                <svg
-                  version="1.1"
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="32"
-                  height="32"
-                  viewBox="0 0 32 32"
-                >
-                  <title>lock</title>
-                  <path
-                    d="M27 12h-1v-2c0-5.514-4.486-10-10-10s-10 4.486-10 10v2h-1c-0.553 0-1 0.447-1 1v18c0 0.553 0.447 1 1 1h22c0.553 0 1-0.447 1-1v-18c0-0.553-0.447-1-1-1zM8 10c0-4.411 3.589-8 8-8s8 3.589 8 8v2h-16v-2zM26 30h-20v-16h20v16z"
-                  ></path>
-                  <path
-                    d="M15 21.694v4.306h2v-4.306c0.587-0.348 1-0.961 1-1.694 0-1.105-0.895-2-2-2s-2 0.895-2 2c0 0.732 0.413 1.345 1 1.694z"
-                  ></path>
-                </svg>
-                Register
-              </button>
-            </form>
-              
-          </div>
-        </div>
-      </div>
-    </main>
-    
-<script>
-    var userRoleField = document.getElementById('id_User_role');
-    var studentIdField = document.getElementById('studentIdField');
-    var studentIdInput = document.getElementById('student_id');
 
-    userRoleField.addEventListener('change', function() {
-        if (this.value === 'Student') {
-            studentIdField.style.display = 'block';
-            studentIdInput.setAttribute('required', '');
-        } else {
-            studentIdField.style.display = 'none';
-            studentIdInput.removeAttribute('required');
+                {% if form.email.errors %}
+                    {% for error in form.email.errors %}
+                        {{ error }}
+                    {% endfor %}
+                {% endif %}
+
+                <div id="studentIdField" class="register-labels">
+                    <label for="id_student_id">Student ID:</label>
+                    <input type="number" id="student_id" name="student_id">
+                </div>
+
+                <div class="register-button-container">
+
+                    <button class="register-button" type="submit">
+                        Register
+                    </button>
+
+                    <p>Already have an account?</p>
+                    <button class="register-button login-button" onclick="location.href='{% url 'login' %}'">Login
+                    </button>
+
+                </div>
+
+
+            </form>
+
+
+        </div>
+
+    </div>
+
+
+
+
+    <script>
+        const userRoleField = document.getElementById('id_User_role');
+        const studentIdField = document.getElementById('studentIdField');
+        studentIdField.style.display = 'none'
+        const studentIdInput = document.getElementById('student_id');
+        const showHideID = () => {
+            const userRoleField = document.getElementById('id_User_role');
+            console.log(userRoleField.value)
+            if (userRoleField.value === 'Teacher') {
+                studentIdField.style.display = 'none'
+            } else {
+                studentIdField.style.display = ''
+            }
+
         }
-    });
-</script>
+        userRoleField.addEventListener('change', () => {
+            showHideID()
+        })
+
+    </script>
 {% endblock contain %}
 

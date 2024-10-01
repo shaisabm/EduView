@@ -1,3 +1,10 @@
 body {
     background-color: rgb(71, 70, 70);
 }
+
+body {
+    padding-top: 100px;
+}
+p {
+    font-family: Arial, serif;
+}

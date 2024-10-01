@@ -1,36 +1,184 @@
 {% extends 'main.html' %}
 {% load static %}
+
 {% block contain %}
+<link rel="stylesheet" href="{% static 'styles/home.css' %}">
+<style>
+
+body {
+    padding-left: 100px;
+    padding-right: 100px;
+}
+
+.table-title {
+    display: flex;
+    justify-content: center;
+    font-family: sans-serif;
+    font-weight: 600;
+    font-size: 24px;
+    margin-bottom: 12px;
+    text-decoration: none;
+    color: #07e2ff;
+
+}
+.home-container {
+    display: flex;
+}
+.table-container {
+    margin-right: 20px ;
+    flex: 1;
+}
 
 
-{#<table class="">#}
-{#                <thead>#}
-{#                    <tr>#}
-{#                        <th>Student ID</th>#}
-{#                        <th>First Name</th>#}
-{#                        <th>Middle Name</th>#}
-{#                        <th>Last Name</th>#}
-{#                        <th>Gender</th>#}
-{#                        <th>Action</th>#}
-{#                    </tr>#}
-{#                </thead>#}
-{#                <tbody>#}
-{#                    {% for student in students %}#}
-{#                    <tr>#}
-{#                        <td><a href="{% url 'profile' student.Student_ID %}">{{ student.Student_ID }}</a></td>#}
-{#                        <td>{{ student.First_Name }}</td>#}
-{#                        <td>{{ student.Middle_Name }}</td>#}
-{#                        <td>{{ student.Last_Name }}</td>#}
-{#                        <td>{{ student.Gender}}</td>#}
-{#                        <td>#}
-{#                            #}
-{#                            <button type="submit" class="btn btn-danger"><a style="color: #e1f6fb" href="{% url 'delete_student' student.Student_ID %}">Delete</a></button>#}
-{#                            #}
-{#                        </td>#}
-{#                    </tr>#}
-{#                    {% endfor %}#}
-{#                </tbody>#}
-{#            </table>#}
+.styled-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9em;
+    font-family: sans-serif;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+
+}
+
+.styled-table thead tr {
+    background-color: rgb(52, 58, 64);
+    color: #ffffff;
+    text-align: left;
+}
+
+.styled-table th,
+.styled-table td {
+    padding: 12px 15px;
+}
+
+.styled-table tbody tr {
+    border-bottom: 1px solid #dddddd;
+    transition: background-color 0.15s;
+}
+
+.styled-table tbody tr:nth-of-type(even) {
+    background-color: #f3f3f3;
+}
+
+.styled-table tbody tr:nth-of-type(odd) {
+    background-color: #e0dfdf;
+}
 
 
+.styled-table tbody tr:hover {
+    background-color: #c5c3c3;
+}
+.delete-button {
+    border: none;
+    border-radius: 5px;
+    background-color: #fc4b0b;
+    padding: 7px;
+    transition: background-color 0.15s;
+
+}
+.delete-button:hover {
+    background-color: #da9d9d;
+}
+.delete-button a {
+    text-decoration: none;
+    color: white;
+}
+.recent-viewed-students-container {
+    font-family: Arial, serif;
+    color: white;
+    font-weight: bold;
+    font-size: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.recent-viewed-title {
+    padding-bottom: 20px;
+}
+.student-viewed {
+    display: grid;
+    grid-template-columns: 50px 100px;
+    grid-column-gap: 10px;
+    color: white;
+}
+.student-id {
+    color: #0dcaf0;
+}
+.avatar-iframe {
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+    border-width: 1px;
+    border-color: gray;
+}
+</style>
+<a href="https://docs.google.com/spreadsheets/d/1vo8cMuoN_3WECIckECeiZoKfSuX-hAMFfD_7UX16UYI/edit?gid=0#gid=0" class="table-title" target="_blank">Students Directory</a>
+
+<div class="home-container">
+    <div class="table-container">
+        <table class="styled-table">
+            <thead>
+                <tr>
+                    <th>Student ID</th>
+                    <th>First Name</th>
+                    <th>Middle Name</th>
+                    <th>Last Name</th>
+                    <th>Gender</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for student in students %}
+                <tr>
+                    <td><a href="{% url 'profile' student.Student_ID %}">{{ student.Student_ID }}</a></td>
+                    <td>{{ student.First_Name }}</td>
+                    <td>{{ student.Middle_Name }}</td>
+                    <td>{{ student.Last_Name }}</td>
+                    <td>{{ student.Gender}}</td>
+                    <td>
+                    <button type="submit" class="delete-button"><a href="{% url 'delete_student' student.Student_ID %}">Delete</a></button>
+
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+<!--    {% include 'studentBase/recent_viewed_students.html' %} -->
+    <div id="recent-viewed-container" class="recent-viewed-students-container">
+    </div>
+
+</div>
+<script>
+    function fetchRecentViewedProfiles() {
+        fetch("{% url 'get_recent_viewed_profiles' %}")
+            .then(response => response.json())
+            .then(data => {
+                const container = document.getElementById('recent-viewed-container');
+                container.innerHTML = '<div class="recent-viewed-title">Recent Viewed</div>';
+                data.viewed_profiles.forEach(profile => {
+                    const profileElement = document.createElement('a');
+                    profileElement.style.textDecoration = 'none';
+                    profileElement.href = `/student/${profile.Student_ID}`;
+                    const isDefaultAvatar = profile.Photo.includes('default-avatar.jpg');
+                    profileElement.innerHTML = `
+                        <div class="student-viewed">
+                            ${isDefaultAvatar ?
+                                `<img class="avatar-iframe" src="${profile.Photo}" alt="">` :
+                                `<iframe class="avatar-iframe" src="${profile.Photo}" alt=""></iframe>`
+                            }
+                            <div class="student-info">
+                                <span>${profile.First_Name}</span>
+                                <span class="student-id">${profile.Student_ID}</span>
+                            </div>
+                        </div>
+                    `;
+                    container.appendChild(profileElement);
+                });
+            });
+    }
+
+     setInterval(fetchRecentViewedProfiles, 4000); // Fetch every 30 seconds
+    document.addEventListener('DOMContentLoaded', fetchRecentViewedProfiles);
+</script>
 {% endblock contain %}

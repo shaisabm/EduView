@@ -1,0 +1,101 @@
+{% extends 'main.html' %}
+
+{% block contain %}
+    <style>
+        .first-flex-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-family: Arial, serif;
+            color: white;
+
+
+        }
+
+        .info-field {
+            background-color: #787676;
+            height: 200px;
+            width: 260px;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            margin-bottom: 20px;
+        }
+        .action-buttons {
+            display: flex;
+            justify-content: space-between;
+
+        }
+        .cancel-link, .delete-link{
+            text-decoration: none;
+            color: white;
+            border-radius: 8px;
+            padding: 5px 10px;
+
+        }
+
+        .cancel-link {
+            background-color: #1db7cc;
+        }
+
+        .delete-link {
+            background-color: red;
+
+        }
+        .update-button {
+            background-color: #28b628;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 15px;
+            margin-right: 1px;
+
+        }
+
+
+    </style>
+
+    <main class="update-account layout">
+        <div>
+            <a href="{{ request.META.HTTP_REFERER }}">
+                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="32" height="32"
+                     viewBox="0 0 32 32">
+                    <title>arrow-left</title>
+                    <path
+                            d="M13.723 2.286l-13.723 13.714 13.719 13.714 1.616-1.611-10.96-10.96h27.625v-2.286h-27.625l10.965-10.965-1.616-1.607z"
+                            fill="#ffffff">
+                    </path>
+                </svg>
+            </a>
+        </div>
+
+        <div class="first-flex-container">
+            <h3>Edit your profile</h3>
+            <form class="form" action="" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="info-field">
+                    {% for field in form %}
+                        <div class="info">
+                            <label for="profile_pic">{{ field.label }}: </label>
+                            {{ field }}
+                        </div>
+                    {% endfor %}
+
+                    <div class="action-buttons">
+                        <a class="cancel-link" href="{% url 'home' %}">Cancel</a>
+                        <button class="update-button" type="submit">Update</button>
+                        <a class="delete-link" href="{% url 'delete_teacher' %}">Delete Account</a>
+                    </div>
+                </div>
+                {% for message in messages %}
+                    {{ message }}
+                {% endfor %}
+            </form>
+
+        </div>
+    </main>
+{% endblock contain %}

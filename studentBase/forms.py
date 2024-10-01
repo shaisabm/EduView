@@ -1,3 +1,5 @@
+from urllib3 import request
+
 from .models import Profile, User
 from django.forms import ModelForm, ClearableFileInput
 from django import forms
@@ -9,18 +11,21 @@ class UpdateForm(ModelForm):  # this use to update the students info only
         model = Profile
         fields = "__all__"
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, req = None, **kwargs):
+        self.req = req
         super().__init__(*args, **kwargs)
         self.fields["Schedule"].widget.attrs["readonly"] = True
         self.fields["Photo"].widget.attrs["readonly"] = True
-        student_id = self.instance.Student_ID
-        user = User.objects.get(student_id=student_id)
+        user = self.req.user
+
+
         if user.is_student:
             self.fields["Student_ID"].widget.attrs["readonly"] = True
             self.fields["First_Name"].widget.attrs["readonly"] = True
             self.fields["Middle_Name"].widget.attrs["readonly"] = True
             self.fields["Last_Name"].widget.attrs["readonly"] = True
             self.fields["Grade"].widget.attrs["readonly"] = True
+
 
 
 class RegisterForm(ModelForm):
